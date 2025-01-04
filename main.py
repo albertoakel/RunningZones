@@ -416,7 +416,7 @@ if __name__ == '__main__':
 
     #gpx_zone_plot2(gpx_file,'4:08')
     plot_zones()
-    2
+
     #pace_zones('4:10',opt='print')
     #vdot3km('11:15')
 
