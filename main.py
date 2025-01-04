@@ -371,15 +371,31 @@ def gpx_zone_plot2(filegpx,ftpa):
 def plot_zones():
     z=pace_zones('4:10')
     print(z[0][0],z[0][1])
+    print(z[1][0], z[1][1])
+    print(z[2][0], z[2][1])
+    print(z[3][0], z[3][1])
 
     fig, ax = plt.subplots()
-    #np.random.seed(19680801)
-    #s = 2.9 * np.convolve(np.random.randn(500), np.ones(30) / 30, mode='valid')
-    #ax.plot(s)
-    #ax.axhspan(-1, 1, alpha=0.1)
-    #ax.axhspan(1, 1.5, color='red', alpha=0.1)
-    #ax.set(ylim=(-1.5, 1.5), title="axhspan")
+    t=np.linspace(0,15,120)
+    y=1.25*np.sin(t/2)*np.cos(t*2)+4.8
+    ax.plot(t,y,color=(1,1,1,1))
+    ax.axhspan(pace_ts(z[0][0])/60, pace_ts(z[0][1])/60, color=(0.0, 0.0, 0.25),  alpha=0.5)
+    ax.axhspan(pace_ts(z[1][0])/60, pace_ts(z[1][1])/60, color=(0.1, 0.2, 0.25),  alpha=0.5)
+    ax.axhspan(pace_ts(z[2][0])/60, pace_ts(z[2][1])/60, color=(0.2, 0.3, 0.25),  alpha=0.5)
+    ax.axhspan(pace_ts(z[3][0])/60, pace_ts(z[3][1])/60, color=(0.3, 0.4, 0.25),  alpha=0.6)
+    ax.axhspan(pace_ts(z[4][0])/60, pace_ts(z[4][1])/60, color=(0.4, 0.3, 0.25),  alpha=0.6)
+    ax.axhspan(pace_ts(z[5][0])/60, pace_ts(z[5][1])/60, color=(0.6, 0.2, 0.25),  alpha=0.6)
+    ax.axhspan(pace_ts(z[6][0])/60, pace_ts(z[6][1])/60, color=(0.7, 0.0, 0.25),  alpha=0.6)
+    ax.set(ylim=(pace_ts(z[6][1])/60, pace_ts(z[0][0])/60), title="axhspan")
+    #ax.set_ylim(ax.get_ylim()[::-1])
+
     plt.show()
+
+def vol_zone()
+    """
+    calcule total volumes in the week or month e total for each training zone
+    :return: 
+    """
 
 
 
@@ -389,7 +405,7 @@ if __name__ == '__main__':
     import numpy as np
     import seaborn as sns
 
-    sns.set_theme(style="darkgrid")
+    #sns.set_theme(style="darkgrid")
 
     #=145, 300, s=60, as_cmap=True)
     #gpx_file='/home/akel/codigos _python/343_366_Meia_maratona_OAB.gpx'
