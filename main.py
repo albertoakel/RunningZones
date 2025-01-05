@@ -106,7 +106,6 @@ def pace_zones(ftpa,**kwargs):
         out.append([s_0, s_1])
 
     if opt is None:
-        print('zonas geradas')
         pass
     elif (opt.lower()) == 'print':
         print('ZONAS DE TREINAMENTO BASEADO LIMIAR NO PACE LIMIAR LACTATO \nJoe Friel')
@@ -159,7 +158,6 @@ def vdot3km(t3km,**kwargs):
     pz4 = cz4[1]*t3km + cz4[0]
     pz5 = cz5[1]*t3km + cz5[0]
     if opt is None:
-        print('zonas geradas')
         pass
     elif (opt.lower()) == 'print':
         print('Z1', 'Corrida leve   ', ts_pace(pz1b), ts_pace(pz1a))
@@ -173,7 +171,7 @@ def vdot3km(t3km,**kwargs):
     out= [[pz1b, pz1a], [pz2, pz2 + 15], [pz3, pz3 + 15], [pz4, pz4 + 15], [pz5, pz5 + 15], [pz5 * 0.85, pz5 * 0.922]]
 
     return out
-def gpxfile_imp(filegpx):
+def gpxfile_imp(filegpx,**kwargs):
     """
 
     :param filegpx: Extract data info of gpx file from strava
@@ -182,12 +180,12 @@ def gpxfile_imp(filegpx):
     import gpxpy.gpx
     from datetime import timezone, timedelta
     from haversine import haversine
-
+    opt = kwargs.get('opt')
+    if opt is None:
+        pass
     plt.close('all')
 
     gpx_file = open(filegpx, 'r')
-
-
     gpx0 = gpxpy.parse(gpx_file)
 
     hr = []  #  batimento cardíaco
@@ -196,7 +194,7 @@ def gpxfile_imp(filegpx):
     ele = []  # elevação
     t = []  # datetime_instante
     n = len(gpx0.tracks[0].segments[0].points)
-
+    #print(gpx0.time) #dia/hora da atividade
     for i in range(0, n, 1):
         temp= gpx0.tracks[0].segments[0].points[i]
         t.append(temp.time)
@@ -240,16 +238,15 @@ def gpxfile_imp(filegpx):
     pacer = np.delete(temp_pace, id_low)
     tsr= np.cumsum(np.delete(temp_t, id_low))
     dr = np.cumsum(np.delete(temp_d, id_low))
-
-    # pacer=np.delete(pace_total,id)
-    # tsr = np.cumsum(np.delete(delta_ts, [id]))
-    # dr = np.cumsum(np.delete(delta_d, [id]))
-    print('Total de pontos excluídos H :',len(id_high[0]))
-    print('Total de pontos excluídos L :', len(id_low[0]))
-    print('Tamanho vetor               :',len(pacer))
-    print('Pace médio                  :',pp_pace(np.mean(pacer)))
-    print('Pace max                    :',pp_pace(max(pacer)))
-    print('Pace min                    :',pp_pace(min(pacer)))
+    if opt is None:
+        pass
+    elif (opt.lower())=='print':
+        print('Total de pontos excluídos H :',len(id_high[0]))
+        print('Total de pontos excluídos L :', len(id_low[0]))
+        print('Tamanho vetor               :',len(pacer))
+        print('Pace médio                  :',pp_pace(np.mean(pacer)))
+        print('Pace max                    :',pp_pace(max(pacer)))
+        print('Pace min                    :',pp_pace(min(pacer)))
     return tsr,dr,pacer
 
 def gpx_zone_plot(gpxfile,t3km):
@@ -301,8 +298,8 @@ def gpx_zone_plot(gpxfile,t3km):
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_xlim(-2, d[-1])
     plt.show()
-
     return
+
 def gpx_zone_plot2(filegpx,ftpa):
     """
 
@@ -391,35 +388,63 @@ def plot_zones():
 
     plt.show()
 
-def vol_zone()
+def vol_zone():
     """
     calcule total volumes in the week or month e total for each training zone
     :return: 
     """
+    gpx_files = []
+    path = "/home/akel/codigos _python"
+    dir_list = os.listdir(path)
+    for file in dir_list:
+        if file.endswith(".gpx"):
+            gpx_files.append(file)
 
 
+    s=0
+    s_total=0
+    t_total=0
+    for file in gpx_files:
+        t,d,p=gpxfile_imp(path+'/'+file)
+        print(file,d[-1]/1000,len(d),)
+        s_total+=d[-1]
+        t_total+=t[-1]
+        s+=len(d)
+    print(' --------------------')
+    print('numero de pontos',s)
+    print('distancia total',s_total/1000,'km')
+    print('tempo total',pp_pace(t_total/3600) , 'min')
+
+
+
+
+
+    return
 
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np
     import seaborn as sns
+    import os
 
-    #sns.set_theme(style="darkgrid")
+    sns.set_theme(style="darkgrid")
 
     #=145, 300, s=60, as_cmap=True)
     #gpx_file='/home/akel/codigos _python/343_366_Meia_maratona_OAB.gpx'
     #gpx_file='/home/akel/codigos _python/372_366_15_km.gpx'
     #gpx_file='/home/akel/codigos _python/369_366_Intervalos.gpx'
-    #gpx_file='/home/akel/codigos _python/26122024.gpx'
+    gpx_file='/home/akel/codigos _python/26122024.gpx'
     #gpx_file='/home/akel/codigos _python/Maratona_rio_2024.gpx'
-
+#    print(d)
     #gpx_zone_plot2(gpx_file,'4:08')
-    plot_zones()
+    #plot_zones()
 
     #pace_zones('4:10',opt='print')
     #vdot3km('11:15')
 
+
+    vol_zone()
 
 
 
