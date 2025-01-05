@@ -2,6 +2,9 @@
 Created on Sun Dec 15 14:32:43 2024
 
 """
+from qtconsole.styles import default_template
+
+
 def ts_pace(ts):
     """
     convert time in second to pace(string)
@@ -225,7 +228,8 @@ def gpxfile_imp(filegpx,**kwargs):
     delta_ts=np.diff(ts)
     delta_d=np.diff(d)
     delta_d[0]=30
-    pace_total=(delta_ts/60.0)/(delta_d*0.001)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        pace_total=(delta_ts/60.0)/(delta_d*0.001)
     #identificar pace altos.
 
     #limpar valores altos e baixos
@@ -247,14 +251,14 @@ def gpxfile_imp(filegpx,**kwargs):
         print('Pace médio                  :',pp_pace(np.mean(pacer)))
         print('Pace max                    :',pp_pace(max(pacer)))
         print('Pace min                    :',pp_pace(min(pacer)))
-    return tsr,dr,pacer
+    return {"t" : tsr, "d" : dr, "p" : pacer}
 
 def gpx_zone_plot(gpxfile,t3km):
     z = vdot3km(t3km)
     out = gpxfile_imp(gpxfile)
-    t= out[0]
-    d = out[1]
-    p= out[2]
+    t= out['t']
+    d = out['d']
+    p= out['p']
 
     id1 = np.where((p>= z[0][0] / 60) & (p< z[0][1] / 60))
     id2 = np.where((p>= z[1][0] / 60) & (p< z[0][0] / 60))
@@ -311,9 +315,9 @@ def gpx_zone_plot2(filegpx,ftpa):
 
     z = pace_zones(ftpa)
     out = gpxfile_imp(filegpx)
-    t= out[0]
-    d = out[1]
-    p= out[2]
+    t= out['t']
+    d = out['d']
+    p= out['p']
 
     #identificando as zonas nos dados
     id1  = np.where((p>= pace_ts(z[0][1]) / 60) & (p< pace_ts(z[0][0]) / 60))
@@ -393,27 +397,55 @@ def vol_zone():
     calcule total volumes in the week or month e total for each training zone
     :return: 
     """
+    #Read files from the directory and select only GPX files.
+
     gpx_files = []
     path = "/home/akel/codigos _python"
-    dir_list = os.listdir(path)
-    for file in dir_list:
-        if file.endswith(".gpx"):
-            gpx_files.append(file)
-
+    try:
+        dir_list = os.listdir(path)
+        for file in dir_list:
+            if file.endswith(".gpx"):
+                gpx_files.append(file)
+        if len(gpx_files)==0:
+            print('Não há arquivos GPX')
+            return []
+    except FileNotFoundError:
+        print(f"ERRO: O diretório '{path}' não foi encontrado.")
+        return []
 
     s=0
     s_total=0
     t_total=0
+    count_file=0
     for file in gpx_files:
-        t,d,p=gpxfile_imp(path+'/'+file)
+        out=gpxfile_imp(path+'/'+file)
+        d=out['d']
+        t=out['t']
+        p=out['p']
+        if count_file==0:
+            d_sum=d
+            t_sum=t
+            p_sum=p
+
         print(file,d[-1]/1000,len(d),)
         s_total+=d[-1]
         t_total+=t[-1]
         s+=len(d)
+        count_file+=1
+        if count_file > 1:
+            d_end=d_sum[-1]
+            for i in range(len(d)):
+                d_sum = np.append(d_sum, d_end + d[i])
+
+        # d_end = d[-1]
+        # for i in range(len(b)):
+        #     a = np.append(a, d_end + b[i])
+
     print(' --------------------')
     print('numero de pontos',s)
     print('distancia total',s_total/1000,'km')
     print('tempo total',pp_pace(t_total/3600) , 'min')
+    print(len(d_sum),d_sum[-1])
 
 
 
@@ -434,7 +466,7 @@ if __name__ == '__main__':
     #gpx_file='/home/akel/codigos _python/343_366_Meia_maratona_OAB.gpx'
     #gpx_file='/home/akel/codigos _python/372_366_15_km.gpx'
     #gpx_file='/home/akel/codigos _python/369_366_Intervalos.gpx'
-    gpx_file='/home/akel/codigos _python/26122024.gpx'
+    #gpx_file='/home/akel/codigos _python/26122024.gpx'
     #gpx_file='/home/akel/codigos _python/Maratona_rio_2024.gpx'
 #    print(d)
     #gpx_zone_plot2(gpx_file,'4:08')
@@ -442,6 +474,9 @@ if __name__ == '__main__':
 
     #pace_zones('4:10',opt='print')
     #vdot3km('11:15')
+
+    #out=gpxfile_imp(gpx_file)
+
 
 
     vol_zone()
