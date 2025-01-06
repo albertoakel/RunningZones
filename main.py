@@ -434,9 +434,11 @@ def vol_zone():
         count_file+=1
         if count_file > 1:
             d_end=d_sum[-1]
+            t_end=t_sum[-1]
             for i in range(len(d)):
                 d_sum = np.append(d_sum, d_end + d[i])
-
+                t_sum = np.append(t_sum, t_end + t[i])
+                p_sum = np.append(p_sum, p[i])
         # d_end = d[-1]
         # for i in range(len(b)):
         #     a = np.append(a, d_end + b[i])
@@ -446,6 +448,14 @@ def vol_zone():
     print('distancia total',s_total/1000,'km')
     print('tempo total',pp_pace(t_total/3600) , 'min')
     print(len(d_sum),d_sum[-1])
+    print(len(t_sum),t_sum[-1]/3600)
+    print(len(p_sum))
+
+
+
+    plt.plot(d_sum, p_sum)
+    plt.show()
+
 
 
 
