@@ -493,8 +493,6 @@ def vol_zone(path_files):
 
     find_zones(p,t,d,z)
 
-
-
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np
