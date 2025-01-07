@@ -8,7 +8,7 @@ Run for 20 minutes at a strong but sustainable pace. At the end, calculate
 your average pace. Multiply the average pace by 1.05 (or add 5% to the
 time per kilometer). The result will be your estimated threshold pace.
 Example: **Average pace over 20 minutes: 4:30 min/km. 5% of 4:30 is about 0:13 seconds.
-Estimated threshold:('Ftpa') f4:43 min/km**
+Estimated threshold: Ftpa f4:43 min/km**
 
 ## 2) Run for 30 minutes:
 Run for 30 minutes at a strong but steady pace. Calculate the average pace

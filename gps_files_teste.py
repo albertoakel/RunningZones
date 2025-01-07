@@ -13,14 +13,13 @@ import numpy as np
 
 import gpxpy.gpx
 import matplotlib.pyplot as plt
-from datetime import datetime, timezone, timedelta
+from datetime import timezone, timedelta
 from haversine import haversine
 
 plt.close('all')
 
 # gpx_file = open('Morning_Run1.gpx', 'r')
 gpx_file = open('173_365_16_km.gpx', 'r')
-gpx_file = open('26122024.gpx', 'r')
 
 gpx0 = gpxpy.parse(gpx_file)
 
