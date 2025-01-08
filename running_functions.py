@@ -203,6 +203,7 @@ def gpxfile_imp(filegpx,**kwargs):
     :param filegpx: Extract data info of gpx file from strava
     :return: time,distance e pace
     """
+
     import gpxpy.gpx
     from datetime import timezone, timedelta
     from haversine import haversine
@@ -461,18 +462,19 @@ def vol_zone(path_files):
     """
     #Read files from the directory and select only GPX files.
     z = pace_zones('4:08')
-    gpx_files = []
-    try:
-        dir_list = os.listdir(path_files)
-        for file in dir_list:
-            if file.endswith(".gpx"):
-                gpx_files.append(file)
-        if len(gpx_files)==0:
-            print('Não há arquivos GPX')
-            return []
-    except FileNotFoundError:
-        print(f"ERRO: O diretório '{path_files}' não foi encontrado.")
-        return []
+    gpx_files=gpx_dir(path_files)
+    #gpx_files = []
+    # try:
+    #     dir_list = os.listdir(path_files)
+    #     for file in dir_list:
+    #         if file.endswith(".gpx"):
+    #             gpx_files.append(file)
+    #     if len(gpx_files)==0:
+    #         print('Não há arquivos GPX')
+    #         return []
+    # except FileNotFoundError:
+    #     print(f"ERRO: O diretório '{path_files}' não foi encontrado.")
+    #     return []
 
     s=0
     s_total=0
