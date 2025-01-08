@@ -1,4 +1,5 @@
 """
+A set of functions for running evaluation and performance
 
 """
 import matplotlib.pyplot as plt
@@ -43,6 +44,23 @@ def pace_ts(time):
     s = int(s)
 
     return m*60 + s
+
+def gpx_dir(path_files):
+
+    gpx_files = []
+    try:
+        dir_list = os.listdir(path_files)
+        for file in dir_list:
+            if file.endswith(".gpx"):
+                gpx_files.append(file)
+        if len(gpx_files) == 0:
+            print('Não há arquivos GPX')
+            return []
+    except FileNotFoundError:
+        print(f"ERRO: O diretório '{path_files}' não foi encontrado.")
+        return []
+
+    return gpx_files
 
 def pace_zones(ftpa,**kwargs):
     """
@@ -182,7 +200,6 @@ def vdot3km(t3km,**kwargs):
     return out
 def gpxfile_imp(filegpx,**kwargs):
     """
-
     :param filegpx: Extract data info of gpx file from strava
     :return: time,distance e pace
     """
@@ -196,6 +213,10 @@ def gpxfile_imp(filegpx,**kwargs):
 
     gpx_file = open(filegpx, 'r')
     gpx0 = gpxpy.parse(gpx_file)
+
+    #moving_data = gpx0.get_moving_data(raw=True)
+    #print(moving_data)
+
 
     hr = []  #  batimento cardíaco
     lat = []  # latitude
@@ -257,6 +278,8 @@ def gpxfile_imp(filegpx,**kwargs):
         print('Pace médio                  :',pp_pace(np.mean(pacer)))
         print('Pace max                    :',pp_pace(max(pacer)))
         print('Pace min                    :',pp_pace(min(pacer)))
+
+
     return {"t" : tsr, "d" : dr, "p" : pacer}
 
 def gpx_zone_plot(gpxfile,t3km):
