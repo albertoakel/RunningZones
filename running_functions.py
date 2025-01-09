@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+from pyarrow.types import is_decimal256
+
 
 def ts_pace(ts):
     """
@@ -43,7 +45,7 @@ def pace_ts(time):
     m = int(m)
     s = int(s)
 
-    return m*60 + s
+    return int(m*60 + s)
 
 def gpx_dir(path_files):
 
@@ -106,6 +108,7 @@ def pace_zones(ftpa,**kwargs):
     opt = kwargs.get('opt')
     out = []
     ts=pace_ts(ftpa)
+    #ts=int(ts)
     s_lim = ts % 60
     m_lim = ts // 60
     s = "%02d" % int(m_lim) + ':' + "%02d" % int(s_lim)
@@ -410,7 +413,9 @@ def find_zones(p,t,d,z):
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_ylim(8,3)
     ax.set_xlim(-2, d[-1])
-    plt.show()
+#    plt.show()
+
+    return id1[0],id2[0],id3[0],id4[0],id5a[0],id5a[0],id5c[0]
 
 
 def gpx_zone_plot2(filegpx,ftpa):
