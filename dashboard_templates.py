@@ -27,6 +27,7 @@ def dash_01():
     z = pace_zones(ftpa)
 
     path_files="/home/akel/Downloads/off_season2024"
+    path_files="/home/akel/codigos _python/"
     gpx_files=gpx_dir(path_files)
 
     option = st.selectbox("ESCOLHA SUA OPÇÃO",gpx_files, index=0)
@@ -78,10 +79,7 @@ def dash_01():
                               marker=dict(color='darkred'),
                               name='Z5c'))
     fig1.update_layout(xaxis_range=[0, d[-1]])
-    #fig1.update_yaxes(range=[None, 3], autorange="max reversed")
-
-    #fig1.update_yaxes(autorange="reversed",)
-    fig1.update_layout(yaxis_range=[7, 3.5])
+    fig1.update_layout(yaxis_range=[3.5, 7])
 
 
 
