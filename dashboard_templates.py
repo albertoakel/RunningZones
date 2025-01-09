@@ -12,6 +12,7 @@ import plotly.express as px
 from running_functions import gpxfile_imp
 
 
+
 def dash_01():
     """
     examples
@@ -36,19 +37,17 @@ def dash_01():
     path_files="/home/akel/Downloads/off_season2024"
     gpx_files=gpx_dir(path_files)
 
-    option = st.selectbox("ESCOLHA SUA OPÇÃO",gpx_files, index=None)
+   # option = st.selectbox("ESCOLHA SUA OPÇÃO", ["Nenhum"] + gpx_files)
 
+    # Mostra o arquivo selecionado
+
+    option = st.selectbox("ESCOLHA SUA OPÇÃO",gpx_files, index=0)
     st.write('seu arquivo é:',option)
-    if str(option) != "None":
-        out = gpxfile_imp(path_files + '/' + str(option))
-    else:
-        pass
 
-    t = out['t']
-    d = out['d']
-    p = out['p']
-    st.write(d[-1])
-    st.write(t[-1])
+    out = gpxfile_imp(path_files + '/' + str(option))
+
+    d=out['d']
+    st.write(d[0:10])
 
     #find_zones(p, t, d, z)
 
