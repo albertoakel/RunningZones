@@ -1,14 +1,9 @@
-import os
-
-from click import option
 
 from running_functions import *
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
-
 from running_functions import gpxfile_imp
 
 
