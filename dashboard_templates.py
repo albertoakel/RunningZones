@@ -47,7 +47,28 @@ def dash_01():
     out = gpxfile_imp(path_files + '/' + str(option))
 
     d=out['d']
-    st.write(d[0:10])
+    p=out['p']
+    t=out['t']
+    #st.write(d[0:10])
+
+    dataset = pd.DataFrame({'d': d, 'p': p, 't': t})
+    # with st.container(height=400):
+    #     st.line_chart(dataset,x='d', y="p")
+    #with st.container(height=400):
+    col1,col2,col3=st.columns([1,8,1])
+
+    fig1 = go.Figure()
+    fig1.add_trace(go.Scatter(x=d, y=p,
+                              mode='lines',line_color='#999791',
+                              name='pace',fillcolor='red'))
+    fig1.add_trace(go.Scatter(x=d, y=p,
+                              mode='markers',line_width = 1,
+                              marker=dict(color='blue'),
+                            name='markers'))
+    col2.plotly_chart(fig1)
+
+
+
 
     #find_zones(p, t, d, z)
 
