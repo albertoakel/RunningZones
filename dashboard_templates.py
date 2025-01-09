@@ -26,7 +26,7 @@ def dash_01():
     ftpa = st.text_input("pace ftpa:","04:10")
     z = pace_zones(ftpa)
 
-    path_files="/home/akel/Downloads/off_season2024"
+    #path_files="/home/akel/Downloads/off_season2024"
     path_files="/home/akel/codigos _python/"
     gpx_files=gpx_dir(path_files)
 
