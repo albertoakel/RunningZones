@@ -228,6 +228,7 @@ def gpxfile_imp(filegpx,**kwargs):
     ele = []  # elevação
     t = []  # datetime_instante
     n = len(gpx0.tracks[0].segments[0].points)
+    date_gpx=gpx0.time
     #print(gpx0.time) #dia/hora da atividade
     for i in range(0, n, 1):
         temp= gpx0.tracks[0].segments[0].points[i]
@@ -284,7 +285,7 @@ def gpxfile_imp(filegpx,**kwargs):
         print('Pace min                    :',pp_pace(min(pacer)))
 
 
-    return {"t" : tsr, "d" : dr, "p" : pacer}
+    return {"t" : tsr, "d" : dr, "p" : pacer,"date":date_gpx}
 
 def gpx_zone_plot(gpxfile,t3km):
     z = vdot3km(t3km)

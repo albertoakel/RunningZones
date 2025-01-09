@@ -15,12 +15,12 @@ def dash_01():
 
     #configuração da paginas
     st.set_page_config(layout="wide")
-    st.markdown("## Running functions"+'sads')
+    st.markdown("## Running functions")
 
     #criar botão para leitura de arquivo
     opcoes2=('VDOT','FRIEL')
 
-    #carregar lista de arquivos gpx
+
     col1,col2=st.columns([1,3])
     with col1:
         ftpa = st.text_input("pace ftpa:","04:10")
@@ -33,19 +33,43 @@ def dash_01():
         st.markdown("##### zona 5b: " +z[5][1]+"  "+z[5][0])
         st.markdown("##### zona 5c: " +z[6][1]+"  "+z[6][0])
 
-    with col2:
-        st.markdown("## nasdasssssssssssssssssss asfdasifh fahdf hasfdhsa sdf sadfbsgd")
 
-
-
-
-
-
-
-    #path_files="/home/akel/Downloads/off_season2024"
-    path_files="/home/akel/codigos _python/"
+    #carregar lista de arquivos gpx
+    path_files="/home/akel/Downloads/off_season2024"
+    #path_files="/home/akel/codigos _python/"
     gpx_files=gpx_dir(path_files)
+# -------------------------------------------------
+# começa aqui
+    Z_st = ['z1', 'z2', 'z3', 'z4', 'z5a', 'z5b', 'z5c']
+    df_0 = pd.DataFrame({'zones%': Z_st})
+    for i in range(len(gpx_files)):
+        test=gpxfile_imp(path_files + '/'+gpx_files[i])
+        d_o = test['d']
+        p_o = test['p']
+        t_o = test['t']
+        j1,j2,j3,j4,j5a,j5b,j5c=find_zones(p_o, t_o, d_o, z)
+        temp_date=test['date']
+        total=len(p_o[j1])+len(p_o[j2])+len(p_o[j3])+len(p_o[j4])+len(p_o[j5a])+len(p_o[j5b])+len(p_o[j5c])
+        z1_o = '%05.2f' % (len(p_o[j1])/ total * 100) + '% '
+        z1_o = (len(p_o[j1])/ total * 100)
+        z2_o = (len(p_o[j2])/ total * 100)
+        z3_o = (len(p_o[j3])/ total * 100)
+        z4_o = (len(p_o[j4])/ total * 100)
+        z5a_o = (len(p_o[j5a])/ total * 100)
+        z5b_o = (len(p_o[j5b])/ total * 100)
+        z5c_o = (len(p_o[j5c])/ total * 100)
+        zones=[z1_o,z2_o,z3_o,z4_o,z5a_o,z5b_o,z5c_o]
+        df_n=pd.DataFrame({temp_date.strftime("%d/%m/%Y"): zones})
+        df_0=pd.concat([df_0,df_n],axis=1)
 
+    #df_0 = pd.DataFrame({'zones%':Z_st,temp_date.strftime("%d/%m/%Y"):zones})
+
+    st.write(df_0)
+
+
+
+#termina aqui
+#-----------------------
     option = st.selectbox("ESCOLHA SUA OPÇÃO",gpx_files, index=0)
     out = gpxfile_imp(path_files + '/' + str(option))
 
@@ -92,6 +116,17 @@ def dash_01():
                               name='Z5c'))
     fig1.update_layout(xaxis_range=[0, d[-1]])
     fig1.update_layout(yaxis_range=[3.5, 7])
+
+
+
+    data_canada = px.data.gapminder().query("country == 'Canada'")
+    fig2 = px.bar(data_canada, x='year', y='pop')
+
+    long_df = px.data.medals_long()
+    fig3 = px.bar(long_df, x="nation", y="count", color="medal", title="Long-Form Input")
+
+    with col2:
+        st.plotly_chart(fig3)
 
     with st.container():
         st.plotly_chart(fig1, use_container_width=True)
