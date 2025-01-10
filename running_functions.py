@@ -416,7 +416,7 @@ def find_zones(p,t,d,z):
     ax.set_xlim(-2, d[-1])
 #    plt.show()
 
-    return id1[0],id2[0],id3[0],id4[0],id5a[0],id5a[0],id5c[0]
+    return id1[0],id2[0],id3[0],id4[0],id5a[0],id5b[0],id5c[0]
 
 
 def gpx_zone_plot2(filegpx,ftpa):
