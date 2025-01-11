@@ -2,7 +2,7 @@
 A set of functions for running evaluation and performance
 
 """
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 import os
 
