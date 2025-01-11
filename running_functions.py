@@ -337,9 +337,9 @@ def gpx_zone_plot(gpxfile,t3km):
     ax.set_xlim(-2, d[-1])
     plt.show()
     return
+
 def find_zones(p,t,d,z):
     """
-
     :param p: pace
     :param t: time
     :param d: distance
@@ -469,6 +469,7 @@ def vol_zone(path_files):
     #Read files from the directory and select only GPX files.
     z = pace_zones('4:08')
     gpx_files=gpx_dir(path_files)
+    print(gpx_files)
     #gpx_files = []
     # try:
     #     dir_list = os.listdir(path_files)
