@@ -6,6 +6,7 @@ main file to run or test running functions
 if __name__ == '__main__':
     from running_functions import *
     from dashboard_templates import *
+    from teste_routines_draft import *
     #import seaborn as sns
 
     #sns.set_theme(style="darkgrid")
@@ -22,12 +23,22 @@ if __name__ == '__main__':
 
     #4) Evaluate zones in a set of files
     #path = "/home/akel/Downloads/off_season2024"
-    #vol_zone(path)
+    #vol_zone(path,'4:10')
+
+    #5) Evaluate Dashbord
+    dash_01() #to run streamlit run main.py
+
+   #  4) Evaluate zones in a set of files
+   # path = "/home/akel/Downloads/off_season2024"
+   # vol_zone(path,'4:10')
 
 
 
 
-    dash_01()
+
+
+
+
 
 
 

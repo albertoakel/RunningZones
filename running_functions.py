@@ -48,6 +48,11 @@ def pace_ts(time):
     return int(m*60 + s)
 
 def gpx_dir(path_files):
+    """
+    list gpx file in a director
+    :param path_files: gpx director file
+    :return: string list gpx files
+    """
 
     gpx_files = []
     try:
@@ -356,7 +361,8 @@ def find_zones(p,t,d,z):
     id5b = np.where((p >= pace_ts(z[5][1]) / 60) & (p < pace_ts(z[5][0]) / 60))
     id5c = np.where((p >= pace_ts(z[6][1]) / 60) & (p < pace_ts(z[6][0]) / 60))
 
-    total = len(p)
+    total=len(p[id1])+len(p[id2])+len(p[id3])+len(p[id4])+len(p[id5a])+len(p[id5b])+len(p[id5c])
+
     z1 = '%05.2f' % (len(id1[0]) / total * 100) + '% '
     z2 = '%05.2f' % (len(id2[0]) / total * 100) + '% '
     z3 = '%05.2f' % (len(id3[0]) / total * 100) + '% '
@@ -414,9 +420,11 @@ def find_zones(p,t,d,z):
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_ylim(8,3)
     ax.set_xlim(-2, d[-1])
-#    plt.show()
+    plt.show()
 
-    return id1[0],id2[0],id3[0],id4[0],id5a[0],id5b[0],id5c[0]
+    #{"t": tsr, "d": dr, "p": pacer, "date": date_gpx}
+
+    return {'id1':id1[0],'id2':id2[0],'id3':id3[0],'id4':id4[0],'id5a':id5a[0],'id5b':id5b[0],'id5c':id5c[0]}
 
 
 def gpx_zone_plot2(filegpx,ftpa):
@@ -461,13 +469,14 @@ def plot_zones():
 
     plt.show()
 
-def vol_zone(path_files):
+def vol_zone(path_files: object, ftpa: object) -> object:
     """
     calcule total volumes in the week or month e total for each training zone
     :return:
     """
     #Read files from the directory and select only GPX files.
-    z = pace_zones('4:08')
+    ftpa= '04:10'
+    z = pace_zones(ftpa)
     gpx_files=gpx_dir(path_files)
     print(gpx_files)
     #gpx_files = []
@@ -525,5 +534,6 @@ def vol_zone(path_files):
     p=p_sum
     d=d_sum
     t=t_sum
-
     find_zones(p,t,d,z)
+    
+    return
