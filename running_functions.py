@@ -5,8 +5,7 @@ A set of functions for running evaluation and performance
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
-from pyarrow.types import is_decimal256
+import pandas as pd
 
 
 def ts_pace(ts):
@@ -306,7 +305,8 @@ def gpx_zone_plot(gpxfile,t3km):
     id5 = np.where((p>= z[4][0] / 60) & (p< z[3][0] / 60))
     id5a = np.where((p>= z[5][0] / 60) & (p< z[4][0] / 60))
 
-    total = len(p)
+    total=len(p[id1])+len(p[id2])+len(p[id3])+len(p[id4])+len(p[id5a])
+
     z1 = '%05.2f' % (len(id1[0]) / total * 100) + '% '
     z2 = '%05.2f' % (len(id2[0]) / total * 100) + '% '
     z3 = '%05.2f' % (len(id3[0]) / total * 100) + '% '
@@ -363,13 +363,23 @@ def find_zones(p,t,d,z):
 
     total=len(p[id1])+len(p[id2])+len(p[id3])+len(p[id4])+len(p[id5a])+len(p[id5b])+len(p[id5c])
 
-    z1 = '%05.2f' % (len(id1[0]) / total * 100) + '% '
-    z2 = '%05.2f' % (len(id2[0]) / total * 100) + '% '
-    z3 = '%05.2f' % (len(id3[0]) / total * 100) + '% '
-    z4 = '%05.2f' % (len(id4[0]) / total * 100) + '% '
-    z5a = '%05.2f' % (len(id5a[0]) / total * 100) + '% '
-    z5b = '%05.2f' % (len(id5b[0]) / total * 100) + '% '
-    z5c = '%05.2f' % (len(id5c[0]) / total * 100) + '% '
+    perc_z1=(len(id1[0])/total)
+    perc_z2=(len(id2[0])/total)
+    perc_z3=(len(id3[0])/total)
+    perc_z4=(len(id4[0])/total)
+    perc_z5a=(len(id5a[0])/total)
+    perc_z5b=(len(id5b[0])/total)
+    perc_z5c=(len(id5c[0])/total)
+
+
+
+    z1  = '%05.2f' %(perc_z1*100)  + '% '
+    z2  = '%05.2f' %(perc_z2*100)  + '% '
+    z3  = '%05.2f' %(perc_z3*100) + '% '
+    z4  = '%05.2f' %(perc_z4*100)  + '% '
+    z5a = '%05.2f' %(perc_z5a*100) + '% '
+    z5b = '%05.2f' %(perc_z5b*100) + '% '
+    z5c = '%05.2f' %(perc_z5c*100) + '% '
 
     #print('Tempo Total de Treino', t[-1])
     tz1 = ts_pace((len(id1[0]) / total) * t[-1])
@@ -380,21 +390,17 @@ def find_zones(p,t,d,z):
     tz5b = ts_pace((len(id5b[0]) / total) * t[-1])
     tz5c = ts_pace((len(id5c[0]) / total) * t[-1])
 
-    #total distancia percorridas Zonas
-
-
 
     # resumo
-    print('---------------------------------------')
-    print('Tempo Total:    ' + ts_pace(t[-1] / 60) + ' min' + '\nVolume. Total:  ' + '%05.2f' % float(d[-1] / 1000) + ' km')
-    print('Z1  [' + z[0][0] + '-' + z[0][1] + '] - ' + z1 + '~' + tz1 + 's' + ' ~' + '%05.2f' % (pace_ts(tz1) / 60 * 1 / 5.75) + 'km')
-    print('Z2  [' + z[1][0] + '-' + z[1][1] + '] - ' + z2 + '~' + tz2 + 's' + ' ~' + '%05.2f' % (pace_ts(tz2) / 60 * 1 / 5.00) + 'km')
-    print('Z3  [' + z[2][0] + '-' + z[2][1] + '] - ' + z3 + '~' + tz3 + 's' + ' ~' + '%05.2f' % (pace_ts(tz3) / 60 * 1 / 4.50) + 'km')
-    print('Z4  [' + z[3][0] + '-' + z[3][1] + '] - ' + z4 + '~' + tz4 + 's' + ' ~' + '%05.2f' % (pace_ts(tz4) / 60 * 1 / 4.25) + 'km')
-    print('Z5a [' + z[4][0] + '-' + z[4][1] + '] - ' + z5a + '~' + tz5a + 's' + ' ~' + '%05.2f' % (pace_ts(tz5a) / 60 * 1 / 4.06) + 'km')
-    print('Z5b [' + z[5][0] + '-' + z[5][1] + '] - ' + z5b + '~' + tz5b + 's' + ' ~' + '%05.2f' % (pace_ts(tz5b) / 60 * 1 / 3.83) + 'km')
-    print('Z5c [' + z[6][0] + '-' + z[6][1] + '] - ' + z5c + '~' + tz5c + 's' + ' ~' + '%05.2f' % (pace_ts(tz5c) / 60 * 1 / 3.58) + 'km')
-
+    # print('---------------------------------------')
+    # print('Tempo Total:    ' + ts_pace(t[-1] / 60) + ' min' + '\nVolume. Total:  ' + '%05.2f' % float(d[-1] / 1000) + ' km')
+    # print('Z1  [' + z[0][0] + '-' + z[0][1] + '] - ' + z1 + '~' + tz1 + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z1 ) + 'km')
+    # print('Z2  [' + z[1][0] + '-' + z[1][1] + '] - ' + z2 + '~' + tz2 + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z2 ) + 'km')
+    # print('Z3  [' + z[2][0] + '-' + z[2][1] + '] - ' + z3 + '~' + tz3 + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z3 ) + 'km')
+    # print('Z4  [' + z[3][0] + '-' + z[3][1] + '] - ' + z4 + '~' + tz4 + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z4) + 'km')
+    # print('Z5a [' + z[4][0] + '-' + z[4][1] + '] - ' + z5a + '~' + tz5a + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z5a) + 'km')
+    # print('Z5b [' + z[5][0] + '-' + z[5][1] + '] - ' + z5b + '~' + tz5b + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z5b) + 'km')
+    # print('Z5c [' + z[6][0] + '-' + z[6][1] + '] - ' + z5c + '~' + tz5c + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z5c) + 'km')
 
 
     fig, ax = plt.subplots()
@@ -420,11 +426,11 @@ def find_zones(p,t,d,z):
     ax.set_ylim(ax.get_ylim()[::-1])
     ax.set_ylim(8,3)
     ax.set_xlim(-2, d[-1])
-    plt.show()
+    #plt.show()
 
-    #{"t": tsr, "d": dr, "p": pacer, "date": date_gpx}
+    p_zones=[t[-1],d[-1],perc_z1,perc_z2,perc_z3,perc_z4,perc_z5a,perc_z5b,perc_z5c]
 
-    return {'id1':id1[0],'id2':id2[0],'id3':id3[0],'id4':id4[0],'id5a':id5a[0],'id5b':id5b[0],'id5c':id5c[0]}
+    return {'id1':id1[0],'id2':id2[0],'id3':id3[0],'id4':id4[0],'id5a':id5a[0],'id5b':id5b[0],'id5c':id5c[0],'p_zones':p_zones}
 
 
 def gpx_zone_plot2(filegpx,ftpa):
@@ -469,28 +475,15 @@ def plot_zones():
 
     plt.show()
 
-def vol_zone(path_files: object, ftpa: object) -> object:
+def vol_zone(path_files,ftpa) -> object:
     """
     calcule total volumes in the week or month e total for each training zone
     :return:
     """
     #Read files from the directory and select only GPX files.
-    ftpa= '04:10'
+    #ftpa= '04:10'
     z = pace_zones(ftpa)
     gpx_files=gpx_dir(path_files)
-    print(gpx_files)
-    #gpx_files = []
-    # try:
-    #     dir_list = os.listdir(path_files)
-    #     for file in dir_list:
-    #         if file.endswith(".gpx"):
-    #             gpx_files.append(file)
-    #     if len(gpx_files)==0:
-    #         print('Não há arquivos GPX')
-    #         return []
-    # except FileNotFoundError:
-    #     print(f"ERRO: O diretório '{path_files}' não foi encontrado.")
-    #     return []
 
     s=0
     s_total=0
@@ -508,8 +501,6 @@ def vol_zone(path_files: object, ftpa: object) -> object:
             d_sum=d
             t_sum=t
             p_sum=p
-
-        #print(file,d[-1]/1000,len(d),)
         s_total+=d[-1]
         t_total+=t[-1]
         s+=len(d)
@@ -523,17 +514,55 @@ def vol_zone(path_files: object, ftpa: object) -> object:
                 p_sum = np.append(p_sum, p[i])
 
 
-    # print(' --------------------')
-    # print('numero de pontos',s)
-    # print('distancia total',s_total/1000,'km')
-    # print('tempo total',pp_pace(t_total/3600) , 'min')
-    # print(len(d_sum),d_sum[-1])
-    # print(len(t_sum),t_sum[-1]/3600)
-    # print(len(p_sum))
-
     p=p_sum
     d=d_sum
     t=t_sum
-    find_zones(p,t,d,z)
+    #find_zones(p,t,d,z)
     
-    return
+    return find_zones(p,t,d,z)
+
+
+def gpxfiles_df(path_files,ftpa):
+    """
+    Transform list of gpx file to pandas dataframe
+    :param path_files: diretory
+    :param ftpa: diretory
+
+    :return:
+    """
+    z = pace_zones(ftpa)
+    gpx_files = gpx_dir(path_files)
+
+    for i in range(len(gpx_files)):
+        out=gpxfile_imp(path_files + '/'+gpx_files[i])
+        d_o = out['d']
+        p_o = out['p']
+        t_o = out['t']
+        zn=find_zones(p_o, t_o, d_o, z)
+        j1 = zn['id1']
+        j2 = zn['id2']
+        j3 = zn['id3']
+        j4 = zn['id4']
+        j5a = zn['id5a']
+        j5b = zn['id5b']
+        j5c = zn['id5c']
+        temp_date=out['date']
+        total=len(p_o[j1])+len(p_o[j2])+len(p_o[j3])+len(p_o[j4])+len(p_o[j5a])+len(p_o[j5b])+len(p_o[j5c])
+        z1_o = (len(p_o[j1])/ total * 100)
+        z2_o = (len(p_o[j2])/ total * 100)
+        z3_o = (len(p_o[j3])/ total * 100)
+        z4_o = (len(p_o[j4])/ total * 100)
+        z5a_o = (len(p_o[j5a])/ total * 100)
+        z5b_o = (len(p_o[j5b])/ total * 100)
+        z5c_o = (len(p_o[j5c])/ total * 100)
+        zones=[z1_o,z2_o,z3_o,z4_o,z5a_o,z5b_o,z5c_o]
+        if i==0:
+            df_0 = pd.DataFrame({temp_date: zones})
+        else:
+            df_n=pd.DataFrame({temp_date: zones})
+            df_0=pd.concat([df_0,df_n],axis=1)
+
+    df_0=df_0.sort_index(axis=1)  #reoderanar datas
+
+    return df_0
+

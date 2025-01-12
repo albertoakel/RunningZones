@@ -25,12 +25,17 @@ if __name__ == '__main__':
     #path = "/home/akel/Downloads/off_season2024"
     #vol_zone(path,'4:10')
 
-    #5) Evaluate Dashbord
+    #5) Evaluate Dashboard
     dash_01() #to run streamlit run main.py
 
    #  4) Evaluate zones in a set of files
-   # path = "/home/akel/Downloads/off_season2024"
-   # vol_zone(path,'4:10')
+   #  path = "/home/akel/Downloads/off_season2024"
+   #  out=vol_zone(path,'4:10')
+   #  znp=out['p_zones']
+   #  print('znp',znp[0])
+   #  print('znp',znp[1])
+   #  print('znp',znp[2])
+
 
 
 
