@@ -23,8 +23,8 @@ def dash_01():
     #opcoes2=('VDOT','FRIEL')
 
     # carregar lista de arquivos gpx
-    path_files = "/home/akel/Downloads/off_season2024"
-    # path_files="/home/akel/codigos _python/"
+    #path_files = "/home/akel/Downloads/off_season2024"
+    path_files="/home/akel/codigos _python/"
     gpx_files = gpx_dir(path_files)
 
 #coluna 1 # listar zonas de corrida by joe Friel
@@ -41,52 +41,20 @@ def dash_01():
 
 
 # coluna 2 e 3 e 4 # volume total treinado na semana.
+    df_0=gpxfiles_df(path_files,ftpa) #read files, sort by date and create dataframe
+    sz=df_0.shape
 
-
-    for i in range(len(gpx_files)):
-        test=gpxfile_imp(path_files + '/'+gpx_files[i])
-        d_o = test['d']
-        p_o = test['p']
-        t_o = test['t']
-        zn=find_zones(p_o, t_o, d_o, z)
-        j1 = zn['id1']
-        j2 = zn['id2']
-        j3 = zn['id3']
-        j4 = zn['id4']
-        j5a = zn['id5a']
-        j5b = zn['id5b']
-        j5c = zn['id5c']
-        temp_date=test['date']
-        total=len(p_o[j1])+len(p_o[j2])+len(p_o[j3])+len(p_o[j4])+len(p_o[j5a])+len(p_o[j5b])+len(p_o[j5c])
-        z1_o = (len(p_o[j1])/ total * 100)
-        z2_o = (len(p_o[j2])/ total * 100)
-        z3_o = (len(p_o[j3])/ total * 100)
-        z4_o = (len(p_o[j4])/ total * 100)
-        z5a_o = (len(p_o[j5a])/ total * 100)
-        z5b_o = (len(p_o[j5b])/ total * 100)
-        z5c_o = (len(p_o[j5c])/ total * 100)
-        zones=[z1_o,z2_o,z3_o,z4_o,z5a_o,z5b_o,z5c_o]
-        if i==0:
-            df_0 = pd.DataFrame({temp_date: zones})
-        else:
-            df_n=pd.DataFrame({temp_date: zones})
-            df_0=pd.concat([df_0,df_n],axis=1)
-
-
-    df_0=df_0.sort_index(axis=1)  #reoderanar datas
-
-    #print(df_0)
-    x=df_0.columns[0:8]
-    y=df_0.loc[1, df_0.columns[0:8]]
+    x=df_0.columns[0:sz[1]]
+    y=df_0.loc[1, df_0.columns[0:sz[1]]]
 
     cores = ['purple','darkblue','cadetblue','orange','chocolate','red','darkred']
     # stack-bar_volume
     fig1 = go.Figure()
     zone_name = ['z1', 'z2', 'z3', 'z4', 'z5a', 'z5b', 'z5c']
     for i in range(len(zone_name)) :
-        fig1.add_trace(go.Bar(name=zone_name[i],x=x, y=df_0.loc[i, df_0.columns[0:8]],
+        fig1.add_trace(go.Bar(name=zone_name[i],x=x, y=df_0.loc[i, df_0.columns[0:sz[1]]],
                              marker_color=cores[i],
-                             text=list(round(df_0.loc[i, df_0.columns[0:8]])),  # Adicionando os valores como texto nas barras
+                             text=list(round(df_0.loc[i, df_0.columns[0:sz[1]]])),  # Adicionando os valores como texto nas barras
                              textposition='inside',  # Posicionando o texto dentro da barra
                              hoverinfo='text',
                              ))
@@ -123,6 +91,7 @@ def dash_01():
     z5a = zn['id5a']
     z5b = zn['id5b']
     z5c = zn['id5c']
+    pzn = zn['p_zones']
 
 
     dataset = pd.DataFrame({'d': d, 'p': p, 't': t})
@@ -135,31 +104,31 @@ def dash_01():
     fig2.add_trace(go.Scatter(x=d[z1], y=p[z1],
                                mode='markers',line_width = 1,
                                marker=dict(color='purple'),
-                             name='Z1'))
+                             name='Z1 '+ '%05.2f'%(pzn[2]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z2], y=p[z2],
                               mode='markers', line_width=1,
                               marker=dict(color='darkblue'),
-                              name='Z2'))
+                              name='Z2 '+ '%05.2f'%(pzn[3]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z3], y=p[z3],
                               mode='markers', line_width=1,
                               marker=dict(color='cadetblue'),
-                              name='Z3 - marathon'))
+                              name='Z3 '+ '%05.2f'%(pzn[4]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z4], y=p[z4],
                               mode='markers', line_width=1,
                               marker=dict(color='orange'),
-                              name='Z4 - threshold'))
+                              name='Z4 '+ '%05.2f'%(pzn[5]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z5a], y=p[z5a],
                               mode='markers', line_width=1,
                               marker=dict(color='chocolate'),
-                              name='Z5a'))
+                              name='Z5a '+ '%05.2f'%(pzn[6]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z5b], y=p[z5b],
                               mode='markers', line_width=1,
                               marker=dict(color='red'),
-                              name='Z5b'))
+                              name='Z5b '+ '%05.2f'%(pzn[7]*100) + '%'))
     fig2.add_trace(go.Scatter(x=d[z5c], y=p[z5c],
                               mode='markers', line_width=1,
                               marker=dict(color='darkred'),
-                              name='Z5c'))
+                              name='Z5c '+ '%05.2f'%(pzn[8]*100) + '%'))
     fig2.update_layout(xaxis_range=[0, d[-1]])
     fig2.update_layout(yaxis_range=[7, 3.5])
 
