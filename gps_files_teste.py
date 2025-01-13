@@ -121,7 +121,7 @@ print('tempo       ',point[44].time)
 print('latitude    ', point[44].latitude)
 print('longitude   ', point[44].longitude)
 print('elevação    ', point[44].elevation)
-print('hr          ', hr)
+print('hr           ', hr)
 
 
 
