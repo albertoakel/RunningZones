@@ -5,7 +5,9 @@ Created on Wed Jul 10 15:59:37 2024
 @author: akel
 """
 import pandas as pd
+from parse_fit import *
 import numpy as np
+from numpy.random import laplace
 
 
 def gpxfile_imp2(filegpx,**kwargs):
@@ -31,6 +33,7 @@ def gpxfile_imp2(filegpx,**kwargs):
     lon = []  # longitude
     ele = []  # elevação
     t = []  # datetime_instante
+    delta_d=[]
     n = len(gpx0.tracks[0].segments[0].points) # dimension data
 
     date_gpx=gpx0.time
@@ -62,7 +65,7 @@ def gpxfile_imp2(filegpx,**kwargs):
 
     delta_ts=np.diff(ts)
     delta_d=np.diff(d)
-    delta_d[0]=30
+    delta_d[0]=0
     with np.errstate(divide='ignore', invalid='ignore'):
         pace_total=(delta_ts/60.0)/(delta_d*0.001)
     #identificar pace altos.
@@ -102,39 +105,35 @@ def gpxfile_imp2(filegpx,**kwargs):
 
     return {"t" : tsr, "d" : dr, "p" : pace,"date":date_gpx,'gpx0':gpx0,'df':df}
 
+
+def gpxfitfile_imp(file_fit):
+    import fitdecode
+
+    print('fit file')
+
+
+            # This frame contains data about a "track point".
+
+
+    return
+
 import matplotlib.pyplot as plt
-import numpy as np
 
-file ='343_366_Meia_maratona_OAB.gpx'
-#file='12_365_longo_.gpx'
+
+#file ='343_366_Meia_maratona_OAB.gpx'
+file='activity_17992136354.gpx'
+#file_fit='05_366_corrida_leve.fit'
 out=gpxfile_imp2(file)
-df=out['df']
-gpx=out['gpx0']
-print('')
+# laps_df, points_df = get_dataframes(file_fit)
+# #print('LAPS:')
+# print(laps_df)
+# print(laps_df.keys())
+# print(points_df.keys())
+# print(laps_df['total_distance'],laps_df['total_elapsed_time']/60)
+# print(points_df['speed'])
+# #print('\nPOINTS:')
+#print(points_df)
+#out=gpxfitfile_imp(file_fit)
 
-pd.set_option('display.max_columns',9)
-pd.set_option('display.width', 10000)
-print(df)
-keys=df.keys()
-print(df['time(s)'])
-print(df['elev'])
-print(out['t'][0])
-elev=df['elev']
-a=np.ediff1d(elev)
-a= np.concatenate(([0], a))
-
-print(a)
-gh=0
-for n in range(len(a)):
-    if a[n]>=0:
-        gh+=a[n]
-print(gh)
-fig, ax = plt.subplots()
-ax.set_aspect(aspect=250)
-ax.plot(df['distance'],elev)
-plt.show()
-
-
-
-
-
+#A=fitdecode.FitReader(file_fit)
+print(out['df'])

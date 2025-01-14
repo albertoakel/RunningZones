@@ -257,7 +257,7 @@ def gpxfile_imp(filegpx,**kwargs):
 
     delta_ts = np.diff(ts)
     delta_d = np.diff(d)
-    delta_d[0] = 30
+    delta_d[0] = 0
     with np.errstate(divide='ignore', invalid='ignore'):
         pace_total = (delta_ts / 60.0) / (delta_d * 0.001)
     # identificar pace altos.

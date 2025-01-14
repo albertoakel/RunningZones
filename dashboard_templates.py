@@ -83,6 +83,12 @@ def dash_01():
     p=out['p']
     t=out['t']
 
+   #d2 = out['df']['distance'].to_numpy(dtype='float32')
+   # p = out['df']['pace']
+   # t = out['df']['time(s)']
+
+
+
     zn=find_zones(p,t,d,z)
     z1  = zn['id1']
     z2  = zn['id2']
@@ -151,5 +157,3 @@ def dash_01():
     with col3:
         st.plotly_chart(fig3)
 
-
-    st.write(out['df'])
