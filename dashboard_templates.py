@@ -23,8 +23,8 @@ def dash_01():
     #opcoes2=('VDOT','FRIEL')
 
     # carregar lista de arquivos gpx
-    #path_files = "/home/akel/Downloads/off_season2024"
-    path_files="/home/akel/codigos _python/"
+    path_files = "/home/akel/Downloads/off_season2024"
+    #path_files="/home/akel/codigos _python/"
     gpx_files = gpx_dir(path_files)
 
 #coluna 1 # listar zonas de corrida by joe Friel
@@ -152,4 +152,4 @@ def dash_01():
         st.plotly_chart(fig3)
 
 
-
+    st.write(out['df'])
