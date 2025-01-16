@@ -83,11 +83,9 @@ def dash_01():
     p=out['p']
     t=out['t']
 
-   #d2 = out['df']['distance'].to_numpy(dtype='float32')
-   # p = out['df']['pace']
-   # t = out['df']['time(s)']
-
-
+    #d2 = out['df']['distance'].values.tolist()
+    #p2 = out['df']['pace'].values.tolist()
+    #t2 = out['df']['time(s)'].to_numpy(dtype='float32')
 
     zn=find_zones(p,t,d,z)
     z1  = zn['id1']
@@ -100,7 +98,7 @@ def dash_01():
     pzn = zn['p_zones']
 
 
-    dataset = pd.DataFrame({'d': d, 'p': p, 't': t})
+    #dataset = pd.DataFrame({'d': d, 'p': p, 't': t})
 
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(x=d, y=p,

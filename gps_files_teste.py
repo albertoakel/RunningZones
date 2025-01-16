@@ -37,6 +37,7 @@ def gpxfile_imp2(filegpx,**kwargs):
     n = len(gpx0.tracks[0].segments[0].points) # dimension data
 
     date_gpx=gpx0.time
+
     fuso = timezone(timedelta(hours=-3))
     point=gpx0.tracks[0].segments[0].points
     for i in range(0, n, 1):
@@ -88,22 +89,22 @@ def gpxfile_imp2(filegpx,**kwargs):
         print('Tamanho vetor               :',len(pace))
 
 
-
-    dr = np.concatenate(([0], dr))
-    tsr = np.concatenate(([0], tsr))
-    pace= np.concatenate(([0], pace))
+    dr = np.concatenate(([0], dr))    #add zero first row
+    tsr = np.concatenate(([0], tsr))  #
+    pace= np.concatenate(([0], pace)) #
 
     dat=[t,tsr,lat,lon,dr,pace,ele,hr,cad]
     column_names = ['time','time(s)','lat','long','distance','pace','elev','hr','cad']
 
-   # m = ['time','time(s)','lat','long','distance','pace','elev','hr','cad']
     df = pd.DataFrame(dat).T
     df.columns = [column_names]
+    df = df.drop(len(df) - 1) #remove last row dataframe
+
     #print(dr[0],dr[1],dr[12])
     #df.rename(index={0:"lat", 1: "lon"})
     #print(df)
+    return {"t": tsr, "d": dr, "p": pace, "date": date_gpx, 'gpx0': gpx0, 'df': df}
 
-    return {"t" : tsr, "d" : dr, "p" : pace,"date":date_gpx,'gpx0':gpx0,'df':df}
 
 
 def gpxfitfile_imp(file_fit):
@@ -119,11 +120,20 @@ def gpxfitfile_imp(file_fit):
 
 import matplotlib.pyplot as plt
 
-
-#file ='343_366_Meia_maratona_OAB.gpx'
-file='activity_17992136354.gpx'
+#file='18_365.gpx'
+file ='343_366_Meia_maratona_OAB.gpx'
+#file='activity_17992136354.gpx'
 #file_fit='05_366_corrida_leve.fit'
 out=gpxfile_imp2(file)
+df=out['df']
+print(df)
+t2=df['time(s)'].to_numpy(dtype='float32')
+#t2=np.transpose(t2)
+t0=out['t']
+
+
+#print(t2,t0)
+#print(t2[5]+t0[5])
 # laps_df, points_df = get_dataframes(file_fit)
 # #print('LAPS:')
 # print(laps_df)
@@ -136,4 +146,12 @@ out=gpxfile_imp2(file)
 #out=gpxfitfile_imp(file_fit)
 
 #A=fitdecode.FitReader(file_fit)
-print(out['df'])
+#print(out['t'])
+# for i in range(len(t0)):
+#     print(t0[i],t2[i])
+
+
+
+print('tempo=',t0[5])
+print(t2[5]+t0[5])
+#print(df.iloc[-1])

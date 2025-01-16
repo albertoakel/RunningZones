@@ -279,18 +279,17 @@ def gpxfile_imp(filegpx,**kwargs):
         print('Total de pontos excluídos L :', len(id_low[0]))
         print('Tamanho vetor               :', len(pace))
 
-    dr = np.concatenate(([0], dr))
+    dr = np.concatenate(([0], dr)) #add zero in first row
     tsr = np.concatenate(([0], tsr))
     pace = np.concatenate(([0], pace))
 
     dat = [t, tsr, lat, lon, dr, pace, ele, hr, cad]
     column_names = ['time', 'time(s)', 'lat', 'long', 'distance', 'pace', 'elev', 'hr', 'cad']
 
-    # m = ['time','time(s)','lat','long','distance','pace','elev','hr','cad']
     df = pd.DataFrame(dat).T
     df.columns = [column_names]
-    # print(dr[0],dr[1],dr[12])
-    # df.rename(index={0:"lat", 1: "lon"})
+    df = df.drop(len(df) - 1) #remove last row dataframe
+
     # print(df)
 
     return {"t": tsr, "d": dr, "p": pace, "date": date_gpx, 'gpx0': gpx0, 'df': df}
@@ -355,7 +354,6 @@ def find_zones(p,t,d,z):
     :param z: zone
     :return:
     """
-
 
     id1 = np.where((p >= pace_ts(z[0][1]) / 60) & (p < pace_ts(z[0][0]) / 60))
     id2 = np.where((p >= pace_ts(z[1][1]) / 60) & (p < pace_ts(z[1][0]) / 60))
