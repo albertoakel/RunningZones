@@ -288,7 +288,8 @@ def gpxfile_imp(filegpx,**kwargs):
 
     df = pd.DataFrame(dat).T
     df.columns = [column_names]
-    df = df.drop(len(df) - 1) #remove last row dataframe
+    df = df.drop(len(df) - 1) #remove last row dataframe    #df.drop(len(df)-1,inplace=True)
+
 
     # print(df)
 
