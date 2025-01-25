@@ -24,7 +24,7 @@ def dash_01():
 
     # carregar lista de arquivos gpx
     path_files = "/home/akel/Downloads/off_season2024"
-    #path_files="/home/akel/codigos _python/"
+    path_files="/home/akel/PycharmProjects/RunningZones/gpx_files/semanaJan_3/"
     gpx_files = gpx_dir(path_files)
 
 #coluna 1 # listar zonas de corrida by joe Friel
@@ -47,17 +47,23 @@ def dash_01():
     x=df_0.columns[0:sz[1]]
     y=df_0.loc[1, df_0.columns[0:sz[1]]]
 
-    cores = ['purple','darkblue','cadetblue','orange','chocolate','red','darkred']
+   #cores = ['purple','darkblue','cadetblue','orange','chocolate','red','darkred']
+    cores = {0:'purple',1:'darkblue',2: 'cadetblue',3:'orange',4:'chocolate',5:'red',6:'darkred'}
     # stack-bar_volume
     fig1 = go.Figure()
     zone_name = ['z1', 'z2', 'z3', 'z4', 'z5a', 'z5b', 'z5c']
     for i in range(len(zone_name)) :
-        fig1.add_trace(go.Bar(name=zone_name[i],x=x, y=df_0.loc[i, df_0.columns[0:sz[1]]],
-                             marker_color=cores[i],
-                             text=list(round(df_0.loc[i, df_0.columns[0:sz[1]]])),  # Adicionando os valores como texto nas barras
-                             textposition='inside',  # Posicionando o texto dentro da barra
-                             hoverinfo='text',
+        fig1.add_trace(go.Bar(
+            name=zone_name[i],
+            x=x,
+            y=df_0.loc[i, df_0.columns[0:sz[1]]],
+            marker_color=cores[i],
+            text = df_0.loc[i, df_0.columns[0:sz[1]]].round(2).tolist(),  # Adicionando os valores como texto nas barras
+            textposition='inside',  # Posicionando o texto dentro da barra
+            hoverinfo='text',
                              ))
+    #text = df_0.loc[i, df_0.columns[0:sz[1]]].round(2).tolist()
+    #text = list(round(df_0.loc[i, df_0.columns[0:sz[1]]]))
     fig1.update_layout(
     barmode='stack',
     title="Volume semanal",
