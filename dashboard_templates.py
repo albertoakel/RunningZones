@@ -24,7 +24,7 @@ def dash_01():
 
     # carregar lista de arquivos gpx
     path_files = "/home/akel/Downloads/off_season2024"
-    path_files="/home/akel/PycharmProjects/RunningZones/gpx_files/semanaJan_3/"
+    path_files="/home/akel/PycharmProjects/RunningZones/gpx_files/semanaFeb_3/"
     gpx_files = gpx_dir(path_files)
 
 #coluna 1 # listar zonas de corrida by joe Friel

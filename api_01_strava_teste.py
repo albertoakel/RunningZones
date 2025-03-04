@@ -4,11 +4,11 @@
 # refreshtoken: 67a24bf77addf8ec6c36112a0f37f4348f23b4e4
 
 import requests
-import numpy as np
 import datetime
 from datetime import timedelta
 import urllib3
 import pandas as pd
+from fontTools.misc.cython import returns
 
 
 def call_strava():
@@ -20,7 +20,6 @@ def call_strava():
         'refresh_token': '4e6bbf53f4023f48fb9b433a10aa8502f16768c0',
         'grant_type': "refresh_token",
         'f': 'json'}
-
     # solicitação de token e sua atualização
     print('solicitação de token..\n')
     response = requests.post(auth_url, data=payload, verify=False)
@@ -43,49 +42,49 @@ def call_strava():
     header = {'Authorization': 'Bearer ' + acess_tkn}
     param = {'per_page': 200, 'page': 1}  # 200 por página.
     response1 = requests.get(activites_url, headers=header, params=param).json()
-    ind=7
-    activity_id = response1[ind]['id']
-    mv_time = response1[ind]['moving_time']
-    elapsed_time = response1[ind]['elapsed_time']
-    tipo_atv = response1[ind]['type']
+
+    indice=2
+    activity_id = response1[indice]['id']
+    mv_time = response1[indice]['moving_time']
+    elapsed_time = response1[indice]['elapsed_time']
+    tipo_atv = response1[indice]['type']
+    sport=response1[indice]['sport_type']
+    st_date = datetime.datetime.strptime(response1[0]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
 
     print('--------')
+    print('')
+    print('act ID:',activity_id)
+    print('tempo de atividade',elapsed_time)
+    print('tipo:',tipo_atv)
+    print('sport:',sport)
 
-#   informação das voltas_no treino
-    laps_act_url = 'https://www.strava.com/api/v3/activities/' + str(activity_id) + '/laps'
-    response3 = requests.get(laps_act_url, headers=header)
-    laps = response3.json()
-
-    #print(laps)
-    for lap in laps:
-        print(f"Lap {lap['lap_index']}: Tempo - {lap['elapsed_time']}s, Distância - {lap['distance']}m")
+    print('inicio atividade:',st_date.strftime('%H:%M %d/%m/%Y'))
+    '''
+        dataset contém diversas informações das atividades. Maiores detalhes
+        aqui: https://developers.strava.com/docs/reference/#api-models-DetailedActivity
+        para detalhamento de uma atividade, precisamos obter o ID desta e realizar uma nova
+        request.
+     '''
+    if sport == 'Run':
+        print('chamar função corrida')
+        call_run(header,activity_id,st_date)
     else:
-        print(f"Erro: {response.status_code} - {response.text}")
-#=====================================================
+        print('não é corrida')
+    return
 
-# converte o str em datetime
-    st_date = datetime.datetime.strptime(response1[ind]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
-    # print(st_date.strftime('%H:%M %d/%m/%Y'))
-
-
+def call_run(header ,activity_id,st_date):
 
     '''
-    dataset contém diversas informações das atividades. Maiores detalhes
-    aqui: https://developers.strava.com/docs/reference/#api-models-DetailedActivity
-    para detalhamento de uma atividade, precisamos obter o ID desta e realizar uma nova
-    request.
+    # https: // developers.strava.com / docs / reference /  # api-models-StreamSet
     '''
+
+    print('call runnnnnnnnnnnnnnnn' )
     detail_act_url = 'https://www.strava.com/api/v3/activities/' + str(activity_id) + '/streams'
+    params = {'keys': 'time,distance,latlng,altitude,velocity_smooth,heartrate,cadence,moving,'
+                      'grade_smooth','key_by_type': 'true'}
 
-    # os parâmetros para o novo resquest podem ser consultados aqui:
-    # https://developers.strava.com/docs/reference/#api-models-StreamSet
-
-    params = {'keys': 'time,distance,latlng,altitude,velocity_smooth,heartrate,cadence,moving,grade_smooth',
-              'key_by_type': 'true'}
     response2 = requests.get(detail_act_url, headers=header, params=params)
     streams = response2.json()
-
-   # / activities / {id} / laps
 
     time = streams['time']['data']
     distance = streams['distance']['data']
@@ -96,59 +95,55 @@ def call_strava():
     cadence = streams['cadence']['data']
     moving = streams['moving']['data']
 
-
-    #
-    #pace = [0.6 ** (-1) * (x+0.000001) for x in velocity]
-    #pace = [1000 / (60 * (x +0.001)) for x in velocity]
-
-    pace=[]
+    pace = []
     for j in range(len(velocity)):
-        if velocity[j]==0:
+        if velocity[j] < 0.75:
             pace.append(0)
         else:
-            pace.append(1000/(60*velocity[j]))
-
-
-
+            pace.append(1000 / (60 * velocity[j]))
 
     hour = []
+
     for i in range(len(time)):
         time_add = timedelta(hours=0, minutes=0, seconds=time[i])
         hour.append(st_date + time_add)
-    # create dataframe
 
+    # create dataframe
     res = zip(hour, time, distance, latlng, altitude, heartrate, velocity, pace, moving, cadence)
     res = list(res)
 
-    df = pd.DataFrame(res,
-                      columns=['hour', 'time', 'distance', 'latlng', 'altitude', 'heartrate', 'velocity(m/s)', 'pace',
-                               'moving', 'cadence'])
-    print(tipo_atv, hour[0].strftime('%H:%M %d/%m/%Y'))
+    df = pd.DataFrame(res, columns=['hour', 'time',
+                                         'distance', 'latlng',
+                                         'altitude', 'heartrate',
+                                         'velocity(m/s)', 'pace',
+                                         'moving', 'cadence'])
 
-    out = {'tipo_atv': tipo_atv, 'date': hour[0], 'dataset': df,'detail':detail_act_url}
-    #print(df)
-    return out
-
-
-out = call_strava()
-
-pd.set_option('display.max_columns',None)
-pd.set_option('display.max_row',None)
-pd.set_option('display.max_colwidth',None)
-pd.set_option('display.width',None)
-A=out['dataset']
-#print(A)
-
-#deta=out['detail']
-
-import matplotlib.pyplot as plt
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_row', None)
+    pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.width', None)
+    print(df)
 
 
-df=A[A['moving']==True]
-#df=df[(df['pace']<=8) &(df['pace']>=3) ]
+    return
 
-print(df['moving'].value_counts())
-print(df['pace'].describe())
-plt.plot(df['time'],df['pace'])
 
-plt.show()
+#
+#     df = pd.DataFrame(res, columns=['hour', 'time',
+#                                     'distance', 'latlng',
+#                                     'altitude', 'heartrate',
+#                                     'velocity(m/s)', 'pace',
+#                                     'moving', 'cadence'])
+#
+#     print(tipo_atv, hour[0].strftime('%H:%M %d/%m/%Y'))
+#
+#     out = {'tipo_atv': tipo_atv, 'date': hour[0], 'dataset': df}
+#
+#     pd.set_option('display.max_columns', None)
+#     pd.set_option('display.max_row', None)
+#     pd.set_option('display.max_colwidth', None)
+#     pd.set_option('display.width', None)
+#     print(df)
+
+call_strava()
+
