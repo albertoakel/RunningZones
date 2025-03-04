@@ -5,10 +5,14 @@
 
 import requests
 import datetime
+import locale
 from datetime import timedelta
+import numpy as np
+
 import urllib3
 import pandas as pd
-from fontTools.misc.cython import returns
+
+locale.setlocale(locale.LC_TIME, "pt_BR.utf8")  # Define o idioma
 
 
 def call_strava():
@@ -29,48 +33,40 @@ def call_strava():
 
     print('acess token:', acess_tkn)
     print('refresh :', rfres_tkn)
-    print('countdown:',
-          '0' + str(int(countd / 3600)) + ':' + str(int(((countd / 3600) - int(countd / 3600)) * 60)) + ':' + str(int(((
-                                                                                                                                   (
-                                                                                                                                               countd / 3600) - int(
-                                                                                                                               countd / 3600)) * 60 - int(
-              ((countd / 3600) - int(countd / 3600)) * 60)) * 60)))
+    print('countdown:','0' + str(int(countd / 3600)) +
+          ':' + str(int(((countd / 3600) - int(countd / 3600)) * 60)) +
+          ':' + str(int((((countd / 3600) - int(countd / 3600)) * 60 - int(((countd / 3600) - int(countd / 3600)) * 60)) * 60)))
 
     # solicita dados gerais das atividades do atleta (usando o acesse token atualizado).
     # No headers é adicionado o token de acesso o qual é atualizado a cada 6h.
     activites_url = "https://www.strava.com/api/v3/athlete/activities"
     header = {'Authorization': 'Bearer ' + acess_tkn}
-    param = {'per_page': 200, 'page': 1}  # 200 por página.
+
+    param = {'per_page': 200, 'page': 2}  # 200 por página.
     response1 = requests.get(activites_url, headers=header, params=param).json()
+    data200= {}  #dataframedearmazenadomento
+    for i in range(100):
+        #i=
+        activity_id = response1[i]['id']
+        sport=response1[i]['sport_type']
+        st_date = datetime.datetime.strptime(response1[i]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
 
-    indice=2
-    activity_id = response1[indice]['id']
-    mv_time = response1[indice]['moving_time']
-    elapsed_time = response1[indice]['elapsed_time']
-    tipo_atv = response1[indice]['type']
-    sport=response1[indice]['sport_type']
-    st_date = datetime.datetime.strptime(response1[0]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
+    # '''
+    #     dataset contém diversas informações das atividades. Maiores detalhes
+    #     aqui: https://developers.strava.com/docs/reference/#api-models-DetailedActivity
+    #     para detalhamento de uma atividade, precisamos obter o ID desta e realizar uma nova
+    #     request.
+    #  '''
+        if sport == 'Run':
+            #print('chamar função corrida')
+            out=call_run(header,activity_id,st_date)
+            label_df=st_date.strftime('%d/%m/%Y-%H%M')
+            data200[label_df] = out  # Armazena com uma chave nomeada
+            df_geral = pd.concat([df.assign(date=name) for name, df in data200.items()], ignore_index=True)
 
-    print('--------')
-    print('')
-    print('act ID:',activity_id)
-    print('tempo de atividade',elapsed_time)
-    print('tipo:',tipo_atv)
-    print('sport:',sport)
+            #print(out.shape)
 
-    print('inicio atividade:',st_date.strftime('%H:%M %d/%m/%Y'))
-    '''
-        dataset contém diversas informações das atividades. Maiores detalhes
-        aqui: https://developers.strava.com/docs/reference/#api-models-DetailedActivity
-        para detalhamento de uma atividade, precisamos obter o ID desta e realizar uma nova
-        request.
-     '''
-    if sport == 'Run':
-        print('chamar função corrida')
-        call_run(header,activity_id,st_date)
-    else:
-        print('não é corrida')
-    return
+    return df_geral
 
 def call_run(header ,activity_id,st_date):
 
@@ -78,7 +74,7 @@ def call_run(header ,activity_id,st_date):
     # https: // developers.strava.com / docs / reference /  # api-models-StreamSet
     '''
 
-    print('call runnnnnnnnnnnnnnnn' )
+    #print('call runnnnnnnnnnnnnnnn' )
     detail_act_url = 'https://www.strava.com/api/v3/activities/' + str(activity_id) + '/streams'
     params = {'keys': 'time,distance,latlng,altitude,velocity_smooth,heartrate,cadence,moving,'
                       'grade_smooth','key_by_type': 'true'}
@@ -88,12 +84,17 @@ def call_run(header ,activity_id,st_date):
 
     time = streams['time']['data']
     distance = streams['distance']['data']
-    latlng = streams['latlng']['data']
     altitude = streams['altitude']['data']
     heartrate = streams['heartrate']['data']
     velocity = streams['velocity_smooth']['data']
     cadence = streams['cadence']['data']
     moving = streams['moving']['data']
+
+    # condição corrida em esteira
+    if len(streams) == 9:
+        latlng = streams['latlng']['data']
+    else:
+        latlng = [np.nan] * len(time)
 
     pace = []
     for j in range(len(velocity)):
@@ -122,10 +123,9 @@ def call_run(header ,activity_id,st_date):
     pd.set_option('display.max_row', None)
     pd.set_option('display.max_colwidth', None)
     pd.set_option('display.width', None)
-    print(df)
+    print(st_date.strftime('%H:%M %d/%m/%Y'),df.shape)
 
-
-    return
+    return df
 
 
 #
@@ -145,5 +145,16 @@ def call_run(header ,activity_id,st_date):
 #     pd.set_option('display.width', None)
 #     print(df)
 
-call_strava()
+DF=call_strava()
 
+pd.set_option('display.max_row', None)
+pd.set_option('display.max_colwidth', None)
+pd.set_option('display.width', None)
+print(DF.shape)
+N=len(DF)
+print(DF)
+
+filename='file_strava.'+DF['date'][0][0:10]+'-'+DF['date'][N-1][0:10]
+filename = filename.replace("/", "-")
+print(filename)
+DF.to_parquet(filename, index=False)  # Salvar

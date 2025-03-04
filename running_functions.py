@@ -569,3 +569,29 @@ def gpxfiles_df(path_files,ftpa):
 
     return df_0
 
+
+def list_monday(data_inicio,data_fim):
+    # lista todas as segundas entre duas datas
+    import datetime
+    import locale
+    from datetime import timedelta
+    #Entrada deve ser similar a esta aqui:
+    #data_inicio=datetime.datetime.strptime(response1[199]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
+    #data_fim=datetime.datetime.strptime(response1[0]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
+
+    data_inicio = datetime.strptime("21/10/2024", "%d/%m/%Y")
+    data_fim = datetime.strptime("04/05/2025", "%d/%m/%Y")
+
+# Ajusta para a primeira segunda-feira após a data de início, se necessário
+    while data_inicio.weekday() != 0:  # Segunda-feira é representada por 0
+        data_inicio += timedelta(days=1)
+
+# Lista todas as segundas-feiras dentro do intervalo
+    segundas = []
+    while data_inicio <= data_fim:
+        segundas.append(data_inicio.strftime("%d/%m/%Y"))
+        data_inicio += timedelta(days=7)  # Pula para a próxima segunda-feira
+
+# Exibe as datas
+    for data in segundas:
+        print(data)
