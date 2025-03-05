@@ -45,8 +45,8 @@ def call_strava():
     param = {'per_page': 200, 'page': 2}  # 200 por página.
     response1 = requests.get(activites_url, headers=header, params=param).json()
     data200= {}  #dataframedearmazenadomento
-    for i in range(100):
-        #i=
+    for i in range(99):
+        i=100+i
         activity_id = response1[i]['id']
         sport=response1[i]['sport_type']
         st_date = datetime.datetime.strptime(response1[i]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
@@ -154,7 +154,7 @@ print(DF.shape)
 N=len(DF)
 print(DF)
 
-filename='file_strava.'+DF['date'][0][0:10]+'-'+DF['date'][N-1][0:10]
+filename='file_strava.'+DF['date'][0][0:10]+'-'+DF['date'][N-1][0:10]+'.parquet'
 filename = filename.replace("/", "-")
 print(filename)
 DF.to_parquet(filename, index=False)  # Salvar
