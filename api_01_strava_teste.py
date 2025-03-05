@@ -42,11 +42,11 @@ def call_strava():
     activites_url = "https://www.strava.com/api/v3/athlete/activities"
     header = {'Authorization': 'Bearer ' + acess_tkn}
 
-    param = {'per_page': 200, 'page': 2}  # 200 por página.
+    param = {'per_page': 200, 'page': 3}  # 200 por página.
     response1 = requests.get(activites_url, headers=header, params=param).json()
     data200= {}  #dataframedearmazenadomento
-    for i in range(99):
-        i=100+i
+    for i in range(100):
+        #i=100+i
         activity_id = response1[i]['id']
         sport=response1[i]['sport_type']
         st_date = datetime.datetime.strptime(response1[i]['start_date_local'], "%Y-%m-%dT%H:%M:%SZ")
