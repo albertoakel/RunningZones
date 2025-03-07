@@ -1,32 +1,19 @@
-#usando dicionarios
-import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
-import time
 
-# Número de DataFrames a serem gerados
-num_dfs = 100
-num_linhas = 2000
+# Dados de exemplo
+x = np.linspace(0, 10, 100)
+dado1 = np.sin(x)
+dado2 = np.cos(x)
+dado3 = np.sin(x) * np.cos(x)
 
-# 🔹 Método 1: Usando lista + concat (Melhor abordagem)
-start = time.time()
-# Criando um dicionário vazio para armazenar os DataFrames
-dataframes = {}
-
-# Gerando múltiplos DataFrames e armazenando no dicionário
-for i in range(num_dfs):  # Exemplo com 3 DataFrames
-    df = pd.DataFrame({
-        "tempo": np.random.randint(300, 3600, num_linhas),
-        "velocidade": np.random.uniform(2, 15, num_linhas),
-        "altimetria": np.random.randint(-50, 500, num_linhas)
-    })
-    dataframes[f"df_{i+1}"] = df  # Armazena com uma chave nomeada
-
-df_geral = pd.concat([df.assign(dataset=name) for name, df in dataframes.items()], ignore_index=True)
-
-# Acessando um DataFrame específico
-tempo_concat = time.time() - start
-print(f"Lista + concat: {tempo_concat:.5f} segundos")
-print(df_geral.shape)
-df_geral.to_parquet("dados.parquet", index=False)  # Salvar
-#df_geral.to_hdf("dados.h5", key="dataset", mode="w")  # Salvar
-
+# Criando a figura e o eixo
+fig, ax = plt.subplots()
+for i in range(3):
+    ax.clear()  # Limpa o eixo para o próximo gráfico
+    dado=(1+x**i)*np.sin(x)
+    ax.plot(x, dado)  # Plota os dados
+    ax.legend()  # Adiciona a legenda
+    plt.draw()  # Atualiza o gráfico
+    plt.pause(0.1)  # Pausa para garantir que o gráfico seja exibido
+    plt.waitforbuttonpress()
