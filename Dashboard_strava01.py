@@ -39,23 +39,75 @@ atv_week['datas_da_semana'] = atv_week['datas_da_semana'].apply(lambda x: x[::-1
 print('Total semanas:',len(atv_week))
 pd.set_option('display.max_row', None)
 pd.set_option('display.max_colwidth', None)
+pd.set_option('display.width', None)
 
+#print(lista_atv)
 fig, ax = plt.subplots()
-for w in range(3):
-    datas_da_semana = atv_week['datas_da_semana'][w]
+for i in range(30):
+    ax.clear()
+    data_e = [lista_atv[i]]
+    df0 = df[df['date'].isin(data_e)]
+    #plt.scatter(df0['distance'], df0['pace'])
+    plt.title(df0['date'].iloc[0][0:10])
+    plt.ylim([3,7])
+
+#filtragens
+    df_m=df0[df0['moving']==True] #apenas em movimento
+    df_p=df_m[(df_m['pace']<=7) &(df_m['pace']>=3) ]
+
+#plt.scatter(df_m['distance'], df_m['pace'])
+    plt.scatter(df_p['distance'], df_p['pace'])
+    plt.draw()  # Atualiza o gráfico
+    plt.pause(0.1)  # Pausa para garantir que o gráfico seja exibido
+    plt.waitforbuttonpress()
+
+print(len(df0))
+print(len(df_m))
+print(len(df_p))
 
 
- # Filtra os dados para toda a semana de uma vez
-    for i in range(len(datas_da_semana)):
-        ax.clear()
-        data_e = [datas_da_semana[i]]
-        df_temp = df[df['date'].isin(data_e)]
-        #print(df_temp['date'].iloc[0][0:10])
-        plt.plot(df_temp['distance'],df_temp['pace'])
-        plt.title(df_temp['date'].iloc[0][0:10])
-        plt.draw()  # Atualiza o gráfico
-        plt.pause(0.1)  # Pausa para garantir que o gráfico seja exibido
-        plt.waitforbuttonpress()
+
+#print(df0)
+plt.show()
+
+
+# #fig, ax = plt.subplots()
+# for w in range(3):
+#     datas_da_semana = atv_week['datas_da_semana'][w]
+#  # Filtra os dados para toda a semana de uma vez
+#     for i in range(len(datas_da_semana)):
+#         ax.clear()
+#         data_e = [datas_da_semana[i]]
+#         df_temp = df[df['date'].isin(data_e)]
+#         #print(df_temp['date'].iloc[0][0:10])
+#         plt.plot(df_temp['distance'],df_temp['pace'])
+#         plt.title(df_temp['date'].iloc[0][0:10])
+#         plt.draw()  # Atualiza o gráfico
+#         plt.pause(0.1)  # Pausa para garantir que o gráfico seja exibido
+#         plt.waitforbuttonpress()
+
+
+
+
+
+
+
+
+#plotar pace x distancia (para cada semana)
+# fig, ax = plt.subplots()
+# for w in range(3):
+#     datas_da_semana = atv_week['datas_da_semana'][w]
+#  # Filtra os dados para toda a semana de uma vez
+#     for i in range(len(datas_da_semana)):
+#         ax.clear()
+#         data_e = [datas_da_semana[i]]
+#         df_temp = df[df['date'].isin(data_e)]
+#         #print(df_temp['date'].iloc[0][0:10])
+#         plt.plot(df_temp['distance'],df_temp['pace'])
+#         plt.title(df_temp['date'].iloc[0][0:10])
+#         plt.draw()  # Atualiza o gráfico
+#         plt.pause(0.1)  # Pausa para garantir que o gráfico seja exibido
+#         plt.waitforbuttonpress()
 
 
 
@@ -66,7 +118,6 @@ for w in range(3):
 # plt.xticks(rotation=45,fontsize=8)
 # plt.show()
 #
-print(df_temp)
 
 
 

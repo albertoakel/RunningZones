@@ -42,8 +42,8 @@ def call_strava():
     activites_url = "https://www.strava.com/api/v3/athlete/activities"
     header = {'Authorization': 'Bearer ' + acess_tkn}
 
-    pagina=1
-    act=20
+    pagina=9
+    act=100
     param = {'per_page': act, 'page': pagina}  # até 200 por página.
     response1 = requests.get(activites_url, headers=header, params=param).json()
     data200= {}  #dataframedearmazenadomento
@@ -135,11 +135,11 @@ pd.set_option('display.width', None)
 DF['week'] = (pd.to_datetime(DF['date'], format='%d/%m/%Y-%H:%M')).dt.isocalendar().week
 print(DF.shape)
 N=len(DF)
-print(DF)
+#print(DF)
 
-filename='file_strava.'+DF['date'][0][0:10]+'-'+DF['date'][N-1][0:10]+'.parquet'
-filename = filename.replace("/", "-")
-print(filename)
-DF.to_parquet(filename, index=False)  # Salvar
+# filename='file_strava.'+DF['date'][0][0:10]+'-'+DF['date'][N-1][0:10]+'.parquet'
+# filename = filename.replace("/", "-")
+# print(filename)
+# DF.to_parquet(filename, index=False)  # Salvar
 
 
