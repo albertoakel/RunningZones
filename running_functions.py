@@ -356,6 +356,10 @@ def find_zones(p,t,d,z):
     :return:
     """
 
+    t = to_numpy_if_series(t)
+    d = to_numpy_if_series(d)
+    p = to_numpy_if_series(p)
+
     id1 = np.where((p >= pace_ts(z[0][1]) / 60) & (p < pace_ts(z[0][0]) / 60))
     id2 = np.where((p >= pace_ts(z[1][1]) / 60) & (p < pace_ts(z[1][0]) / 60))
     id3 = np.where((p >= pace_ts(z[2][1]) / 60) & (p < pace_ts(z[2][0]) / 60))
@@ -364,7 +368,7 @@ def find_zones(p,t,d,z):
     id5b = np.where((p >= pace_ts(z[5][1]) / 60) & (p < pace_ts(z[5][0]) / 60))
     id5c = np.where((p >= pace_ts(z[6][1]) / 60) & (p < pace_ts(z[6][0]) / 60))
 
-    total=len(p[id1])+len(p[id2])+len(p[id3])+len(p[id4])+len(p[id5a])+len(p[id5b])+len(p[id5c])
+    total = np.size(id1) + np.size(id2) + np.size(id3) + np.size(id4) + np.size(id5a) + np.size(id5b) + np.size(id5c)
 
     perc_z1=(len(id1[0])/total)
     perc_z2=(len(id2[0])/total)
@@ -385,6 +389,10 @@ def find_zones(p,t,d,z):
     z5c = '%05.2f' %(perc_z5c*100) + '% '
 
     #print('Tempo Total de Treino', t[-1])
+    if isinstance(t, pd.Series):
+        t=t.tolist()
+
+
     tz1 = ts_pace((len(id1[0]) / total) * t[-1])
     tz2 = ts_pace((len(id2[0]) / total) * t[-1])
     tz3 = ts_pace((len(id3[0]) / total) * t[-1])
@@ -393,7 +401,8 @@ def find_zones(p,t,d,z):
     tz5b = ts_pace((len(id5b[0]) / total) * t[-1])
     tz5c = ts_pace((len(id5c[0]) / total) * t[-1])
 
-
+    if isinstance(d, pd.Series):
+        d = d.tolist()
     # resumo
     # print('---------------------------------------')
     # print('Tempo Total:    ' + ts_pace(t[-1] / 60) + ' min' + '\nVolume. Total:  ' + '%05.2f' % float(d[-1] / 1000) + ' km')
@@ -406,29 +415,29 @@ def find_zones(p,t,d,z):
     # print('Z5c [' + z[6][0] + '-' + z[6][1] + '] - ' + z5c + '~' + tz5c + 's' + ' ~' + '%05.2f' %(float(d[-1] / 1000)*perc_z5c) + 'km')
 
 
-    fig, ax = plt.subplots()
-    ax.plot(d, p, 'silver', linewidth=2)
-    ax.plot(d[id1[0]], p[id1[0]], '.')
-    ax.plot(d[id2[0]], p[id2[0]], '.')
-    ax.plot(d[id3[0]], p[id3[0]], '.')
-    ax.plot(d[id4[0]], p[id4[0]], '.')
-    ax.plot(d[id5a[0]], p[id5a[0]], '.')
-    ax.plot(d[id5b[0]], p[id5b[0]], '.')
-    ax.plot(d[id5c[0]], p[id5c[0]], '.')
-    ax.set_title('Tempo Total: ' + ts_pace(t[-1]/60) + ' min'+ '\n Vol. Total: '+'%05.2f' %float(d[-1]/1000)+'km')
-    ax.set_ylim(ax.get_ylim()[::-1])
-    #
-    ax.legend(['Pace',
-                'Z1  ( ' + z[0][0] + '-' + z[0][1] + ') - ' + z1 + 'Tempo ' + tz1 + 's' ,
-                'Z2  ( ' + z[1][0] + '-' + z[1][1] + ') - ' + z2 + 'Tempo ' + tz2 + 's' ,
-                'Z3  ( ' + z[2][0] + '-' + z[2][1] + ') - ' + z3 + 'Tempo ' + tz3 + 's' ,
-                'Z4  ( ' + z[3][0] + '-' + z[3][1] + ') - ' + z4 + 'Tempo ' + tz4 + 's' ,
-                'Z5a ( ' + z[4][0] + '-' + z[4][1] + ') - ' + z5a + 'Tempo ' + tz5a + 's',
-                'Z5b ( ' + z[5][0] + '-' + z[5][1] + ') - ' + z5b + 'Tempo ' + tz5b + 's',
-                'Z5c ( ' + z[6][0] + '-' + z[6][1] + ') - ' + z5c + 'Tempo ' + tz5c + 's'])
-    ax.set_ylim(ax.get_ylim()[::-1])
-    ax.set_ylim(8,3)
-    ax.set_xlim(-2, d[-1])
+    # fig, ax = plt.subplots(figsize=(14, 5))
+    # ax.plot(d, p, 'silver', linewidth=2)
+    # ax.plot(d[id1[0]], p[id1[0]], '.')
+    # ax.plot(d[id2[0]], p[id2[0]], '.')
+    # ax.plot(d[id3[0]], p[id3[0]], '.')
+    # ax.plot(d[id4[0]], p[id4[0]], '.')
+    # ax.plot(d[id5a[0]], p[id5a[0]], '.')
+    # ax.plot(d[id5b[0]], p[id5b[0]], '.')
+    # ax.plot(d[id5c[0]], p[id5c[0]], '.')
+    # ax.set_title('Tempo Total: ' + ts_pace(t[-1]/60) + ' min'+ '\n Vol. Total: '+'%05.2f' %float(d[-1]/1000)+'km')
+    # ax.set_ylim(ax.get_ylim()[::-1])
+    # #
+    # ax.legend(['Pace',
+    #             'Z1  ( ' + z[0][0] + '-' + z[0][1] + ') - ' + z1 + 'Tempo ' + tz1 + 's' ,
+    #             'Z2  ( ' + z[1][0] + '-' + z[1][1] + ') - ' + z2 + 'Tempo ' + tz2 + 's' ,
+    #             'Z3  ( ' + z[2][0] + '-' + z[2][1] + ') - ' + z3 + 'Tempo ' + tz3 + 's' ,
+    #             'Z4  ( ' + z[3][0] + '-' + z[3][1] + ') - ' + z4 + 'Tempo ' + tz4 + 's' ,
+    #             'Z5a ( ' + z[4][0] + '-' + z[4][1] + ') - ' + z5a + 'Tempo ' + tz5a + 's',
+    #             'Z5b ( ' + z[5][0] + '-' + z[5][1] + ') - ' + z5b + 'Tempo ' + tz5b + 's',
+    #             'Z5c ( ' + z[6][0] + '-' + z[6][1] + ') - ' + z5c + 'Tempo ' + tz5c + 's'])
+    # ax.set_ylim(ax.get_ylim()[::-1])
+    # ax.set_ylim(8,3)
+    # ax.set_xlim(-2, d[-1])
     #plt.show()
 
     p_zones=[t[-1],d[-1],perc_z1,perc_z2,perc_z3,perc_z4,perc_z5a,perc_z5b,perc_z5c]
@@ -594,6 +603,28 @@ def vol_week(df, atv_week, ts):
         Vol.append(S)
 
     return Vol, Date_Vol
+
+
+def data_week(df):
+    '''
+    retorna as atividades dataframe com informações anos,semana, lista_corridadas
+    '''
+    lista_atv=df['date'].unique()
+    dfw = pd.DataFrame(lista_atv, columns=['data_atv'])
+    dfw['week'] = (pd.to_datetime(dfw['data_atv'], format='%d/%m/%Y-%H:%M')).dt.isocalendar().week
+    dfw['ano'] = (pd.to_datetime(dfw['data_atv'], format='%d/%m/%Y-%H:%M')).dt.year
+
+    atv_week = dfw.groupby(['ano', 'week'])['data_atv'].apply(list).reset_index()
+    atv_week.columns = ['ano', 'semana_do_ano', 'datas_da_semana']
+    # inverter ordem linhas
+    atv_week = atv_week.iloc[::-1].reset_index(drop=True)
+    # inverter ordem da lista dentro da coluna
+    atv_week['datas_da_semana'] = atv_week['datas_da_semana'].apply(lambda x: x[::-1])
+    return atv_week,lista_atv
+
+def to_numpy_if_series(obj):
+    #converte numpy caso seja pd.series
+    return obj.to_numpy() if isinstance(obj, pd.Series) else obj
 
 # def list_monday(data_inicio,data_fim):
 #     # lista todas as segundas entre duas datas

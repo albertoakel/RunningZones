@@ -42,11 +42,16 @@ def dash_01():
 
 # coluna 2 e 3 e 4 # volume total treinado na semana.
     df_0=gpxfiles_df(path_files,ftpa) #read files, sort by date and create dataframe
+    pd.set_option('display.max_row', None)
+    pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.width', None)
+    print('shape df_0', df_0.shape)
+    print(df_0)
     sz=df_0.shape
 
     x=df_0.columns[0:sz[1]]
-    y=df_0.loc[1, df_0.columns[0:sz[1]]]
-
+    #y=df_0.loc[1, df_0.columns[0:sz[1]]]
+    #print(y)
    #cores = ['purple','darkblue','cadetblue','orange','chocolate','red','darkred']
     cores = {0:'purple',1:'darkblue',2: 'cadetblue',3:'orange',4:'chocolate',5:'red',6:'darkred'}
     # stack-bar_volume
