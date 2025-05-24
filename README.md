@@ -53,7 +53,7 @@ Este projeto tem como objetivo o desenvolvimento de um **dashboard interativo em
 ## 📁 Estrutura do Projeto
 ```
 📦 run-metrics-dashboard/
-├── 📂 functions/ # Funções para cálculo de ritmo e FTP
+├── 📂 src/ # Funções para cálculo de ritmo e FTP
 ├── 📂 data/ # Dados de treino (Strava, Garmin, CSV)
 ├── 📂 dashboard/ # Código do Streamlit
 ├── 📂 sandbox/ # Protótipos e experimentos
