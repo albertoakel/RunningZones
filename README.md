@@ -15,6 +15,10 @@ Este projeto tem como objetivo o desenvolvimento de um **dashboard interativo em
 
 ## 📊 Prévia da Interface (Streamlit)
 
+
+
+**teste aqui :** https://runningzones-tester.streamlit.app/
+
 *(Adicione aqui prints da interface ou link para versão online do Streamlit, se disponível)*
 
 ## ⚙️ Testes para Estimativa do Ritmo de Limiar (FTPa)
