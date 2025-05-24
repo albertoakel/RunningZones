@@ -12,6 +12,8 @@ import numpy as np
 import urllib3
 import pandas as pd
 
+''
+
 locale.setlocale(locale.LC_TIME, "pt_BR.utf8")  # Define o idioma
 
 
