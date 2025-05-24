@@ -497,6 +497,14 @@ def vol_zone(path_files,ftpa) -> object:
     z = pace_zones(ftpa)
     gpx_files=gpx_dir(path_files)
 
+
+    ## adição
+    df_0 = pd.DataFrame()
+
+    if not gpx_files: # Se a lista de arquivos GPX estiver vazia, retorne o DataFrame vazio
+        print("Nenhum arquivo GPX para processar. Retornando DataFrame vazio.")
+        return df_0
+    ##
     s=0
     s_total=0
     t_total=0
@@ -534,49 +542,119 @@ def vol_zone(path_files,ftpa) -> object:
     return find_zones(p,t,d,z)
 
 
-def gpxfiles_df(path_files,ftpa):
+# Função gpxfiles_df corrigida
+def gpxfiles_df(path_files, ftpa):
     """
     Transform list of gpx file to pandas dataframe
     :param path_files: diretory
-    :param ftpa: diretory
-
-    :return:
+    :param ftpa: diretory (assumed to be a value for pace_zones)
+    :return: pd.DataFrame
     """
-    z = pace_zones(ftpa)
+    z = pace_zones(ftpa) # Assumindo que pace_zones está definida
+
     gpx_files = gpx_dir(path_files)
 
+    # Adição CRÍTICA: Inicializar df_0 ANTES do loop
+    # Se não houver arquivos GPX, um DataFrame vazio será retornado.
+    df_0 = pd.DataFrame()
+
+    if not gpx_files: # Se a lista de arquivos GPX estiver vazia, retorne o DataFrame vazio
+        print("Nenhum arquivo GPX para processar. Retornando DataFrame vazio.")
+        return df_0
+
     for i in range(len(gpx_files)):
-        out=gpxfile_imp(path_files + '/'+gpx_files[i])
+        # Assumindo que gpxfile_imp, find_zones etc. estão definidos.
+        out = gpxfile_imp(os.path.join(path_files, gpx_files[i])) # Usar os.path.join para segurança
         d_o = out['d']
         p_o = out['p']
         t_o = out['t']
-        zn=find_zones(p_o, t_o, d_o, z)
-        j1 = zn['id1']
-        j2 = zn['id2']
-        j3 = zn['id3']
-        j4 = zn['id4']
-        j5a = zn['id5a']
-        j5b = zn['id5b']
-        j5c = zn['id5c']
-        temp_date=out['date']
-        total=len(p_o[j1])+len(p_o[j2])+len(p_o[j3])+len(p_o[j4])+len(p_o[j5a])+len(p_o[j5b])+len(p_o[j5c])
-        z1_o = (len(p_o[j1])/ total * 100)
-        z2_o = (len(p_o[j2])/ total * 100)
-        z3_o = (len(p_o[j3])/ total * 100)
-        z4_o = (len(p_o[j4])/ total * 100)
-        z5a_o = (len(p_o[j5a])/ total * 100)
-        z5b_o = (len(p_o[j5b])/ total * 100)
-        z5c_o = (len(p_o[j5c])/ total * 100)
-        zones=[z1_o,z2_o,z3_o,z4_o,z5a_o,z5b_o,z5c_o]
-        if i==0:
-            df_0 = pd.DataFrame({temp_date: zones})
-        else:
-            df_n=pd.DataFrame({temp_date: zones})
-            df_0=pd.concat([df_0,df_n],axis=1)
+        zn = find_zones(p_o, t_o, d_o, z)
 
-    df_0=df_0.sort_index(axis=1)  #reoderanar datas
+        # Verificação para garantir que as listas de zonas não estão vazias para evitar divisão por zero
+        total = sum(len(p_o[zn[k]]) for k in ['id1', 'id2', 'id3', 'id4', 'id5a', 'id5b', 'id5c'])
+        if total == 0:
+            print(f"Aviso: Não há pontos de dados válidos para zonas no arquivo {gpx_files[i]}. Pulando.")
+            continue # Pula para o próximo arquivo se não houver dados de zonas
+
+        z1_o = (len(p_o[zn['id1']]) / total * 100)
+        z2_o = (len(p_o[zn['id2']]) / total * 100)
+        z3_o = (len(p_o[zn['id3']]) / total * 100)
+        z4_o = (len(p_o[zn['id4']]) / total * 100)
+        z5a_o = (len(p_o[zn['id5a']]) / total * 100)
+        z5b_o = (len(p_o[zn['id5b']]) / total * 100)
+        z5c_o = (len(p_o[zn['id5c']]) / total * 100)
+
+        zones = [z1_o, z2_o, z3_o, z4_o, z5a_o, z5b_o, z5c_o]
+        temp_date = out['date']
+
+        df_n = pd.DataFrame({temp_date: zones})
+        if i == 0 or df_0.empty: # Usa 'or df_0.empty' para garantir que funciona se o primeiro arquivo for ignorado
+            df_0 = df_n
+        else:
+            df_0 = pd.concat([df_0, df_n], axis=1)
+
+    # Se o loop executou e df_0 foi preenchido, então reorganize.
+    # Caso contrário, df_0 já é um DataFrame vazio e o sort_index em um DataFrame vazio não causa erro.
+    if not df_0.empty:
+        df_0 = df_0.sort_index(axis=1)  # reorder dates
 
     return df_0
+
+
+# def gpxfiles_df(path_files,ftpa):
+#     """
+#     Transform list of gpx file to pandas dataframe
+#     :param path_files: diretory
+#     :param ftpa: diretory
+#
+#     :return:
+#     """
+#     z = pace_zones(ftpa)
+#     gpx_files = gpx_dir(path_files)
+# #-------------------------------------
+#     # Adição CRÍTICA: Inicializar df_0 ANTES do loop
+#     # Se não houver arquivos GPX, um DataFrame vazio será retornado.
+#     df_0 = pd.DataFrame()
+#
+#     if not gpx_files:  # Se a lista de arquivos GPX estiver vazia, retorne o DataFrame vazio
+#         print("Nenhum arquivo GPX para processar. Retornando DataFrame vazio.")
+#         return df_0
+# #--------------------------------
+#     for i in range(len(gpx_files)):
+#         out=gpxfile_imp(path_files + '/'+gpx_files[i])
+#         d_o = out['d']
+#         p_o = out['p']
+#         t_o = out['t']
+#         zn=find_zones(p_o, t_o, d_o, z)
+#         j1 = zn['id1']
+#         j2 = zn['id2']
+#         j3 = zn['id3']
+#         j4 = zn['id4']
+#         j5a = zn['id5a']
+#         j5b = zn['id5b']
+#         j5c = zn['id5c']
+#         temp_date=out['date']
+#         total=len(p_o[j1])+len(p_o[j2])+len(p_o[j3])+len(p_o[j4])+len(p_o[j5a])+len(p_o[j5b])+len(p_o[j5c])
+#         z1_o = (len(p_o[j1])/ total * 100)
+#         z2_o = (len(p_o[j2])/ total * 100)
+#         z3_o = (len(p_o[j3])/ total * 100)
+#         z4_o = (len(p_o[j4])/ total * 100)
+#         z5a_o = (len(p_o[j5a])/ total * 100)
+#         z5b_o = (len(p_o[j5b])/ total * 100)
+#         z5c_o = (len(p_o[j5c])/ total * 100)
+#         zones=[z1_o,z2_o,z3_o,z4_o,z5a_o,z5b_o,z5c_o]
+#         if i==0:
+#             df_0 = pd.DataFrame({temp_date: zones})
+#         else:
+#             df_n=pd.DataFrame({temp_date: zones})
+#             df_0=pd.concat([df_0,df_n],axis=1)
+#
+#     if not df_0.empty:
+#         df_0 = df_0.sort_index(axis=1)  # reorder dates
+#
+#     #df_0=df_0.sort_index(axis=1)  #reoderanar datas
+#
+#     return df_0
 
 
 def vol_week(df, atv_week, ts):

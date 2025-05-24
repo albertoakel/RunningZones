@@ -5,6 +5,7 @@ import plotly.express as px
 from running_functions import gpxfile_imp
 
 
+
 def dash_01():
     """
     examples
@@ -22,9 +23,11 @@ def dash_01():
     #opcoes2=('VDOT','FRIEL')
 
     # carregar lista de arquivos gpx
-    path_files = "/home/akel/Downloads/off_season2024"
     path_files="/home/akel/PycharmProjects/RunningZones/data/semanaFeb_3/"
+    #path_files="semanaFeb_3/"
+
     gpx_files = gpx_dir(path_files)
+    print(gpx_files)
 
 #coluna 1 # listar zonas de corrida by joe Friel
     with col1:
