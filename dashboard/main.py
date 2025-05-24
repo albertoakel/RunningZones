@@ -7,7 +7,7 @@ main file to run or test running functions
 
 if __name__ == '__main__':
     from running_functions import *
-    from dashboard_templates import *
+    from dashboard_01 import *
     #from teste_routines_draft import *
     #import seaborn as sns
 

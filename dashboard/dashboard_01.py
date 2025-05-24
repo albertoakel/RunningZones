@@ -1,6 +1,5 @@
 from running_functions import *
 import streamlit as st
-#import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from running_functions import gpxfile_imp
@@ -166,3 +165,6 @@ def dash_01():
     with col3:
         st.plotly_chart(fig3)
 
+
+
+dash_01()
