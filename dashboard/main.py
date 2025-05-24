@@ -3,12 +3,16 @@ Created on Sun Dec 15 14:32:43 2024
 main file to run or test running functions
 
 """
+
+
 if __name__ == '__main__':
     from running_functions import *
     from dashboard_templates import *
-    from dashboard_2 import *
-    from teste_routines_draft import *
+    #from teste_routines_draft import *
     #import seaborn as sns
+
+    dash_01()
+
 
     #sns.set_theme(style="darkgrid")
 
@@ -27,7 +31,7 @@ if __name__ == '__main__':
     #vol_zone(path,'4:10')
 
     #5) Evaluate Dashboard
-    dash_02() #to run streamlit run main.py
+    #dash_01() #to run streamlit run main.py
 
    #  4) Evaluate zones in a set of files
    #  path = "/home/akel/Downloads/off_season2024"
