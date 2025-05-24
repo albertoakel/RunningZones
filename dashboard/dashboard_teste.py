@@ -26,7 +26,7 @@ st.markdown("<h1 style='text-align: center;'>Analisador de Zonas em Corridas</h1
 col1, col2, col3 = st.columns([1, 4, 1])
 
 with col1:
-    ftpa = st.text_input("pace ftpa:", "04:10")
+    ftpa = st.text_input("pace ftpa(limiar) :", "04:10")
     z = pace_zones(ftpa)
     st.markdown("###### zona 1:  " + z[0][1] + "  " + z[0][0])
     st.markdown("###### zona 2:  " + z[1][1] + "  " + z[1][0])
@@ -103,24 +103,42 @@ with col2:
 
                 st.plotly_chart(fig2, use_container_width=True)
 
-            # fig3 = px.pie(df_zones, values='perc_zones', names='zone_name', color='zone_name',
-            #               color_discrete_map={'z1': cores[0],
-            #                                   'z2': cores[1],
-            #                                   'z3': cores[2],
-            #                                   'z4': cores[3],
-            #                                   'z5a': cores[4],
-            #                                   'z5b': cores[5],
-            #                                   'z5c': cores[6]})
-            # fig3.update_traces(textposition='inside')
-            # fig3.update_layout(showlegend=False)
-
-            # with col3:
-            #     st.plotly_chart(fig3)
-
-
 
         except Exception as e:
             st.error(f"Erro ao processar o arquivo GPX: {e}")
     else:
         st.info("Por favor, envie um arquivo GPX para começar.")
 
+with col2: # Ou 'with col3:' se preferir outra coluna
+    st.markdown("---") # Adiciona uma linha horizontal para separar visualmente
+    with st.expander("Clique para ver os Detalhes Técnicos do Código"):
+        st.markdown("""
+
+    **Este aplicativo Streamlit permite avaliar as zonas de corridas a parti da leitura dos arquivos gpx( veja no strava)**
+
+    Usamos a abordagem identificar o Pace de limiar funcional (FTPA) definido por joel Friel. 
+    Detalhes vc encontra aqui. https://joefrieltraining.com/a-quick-guide-to-setting-zone/
+
+    ##### ⚙️ Testes para Estimativa do Ritmo de Limiar (FTPa)                   
+    ###### 🕒 Teste de 20 minutos
+    - Corra 20 minutos em ritmo forte e controlado.
+    - Calcule o ritmo médio e aplique um ajuste de 5% (adicione ~13 segundos por km).
+
+    **Exemplo:**
+    - Ritmo médio: `4:30 min/km`  
+    - Ajuste de 5%: `+0:13`  
+    - **Ritmo estimado de limiar:** `4:43 min/km`
+
+    ###### 🕒 Teste de 30 minutos
+    - Corra 30 minutos em ritmo forte e constante.
+    - O ritmo médio será o próprio **ritmo de limiar**.
+
+    **Exemplo:**
+    - Ritmo médio: `4:45 min/km`  
+    - **Ritmo estimado de limiar:** `4:45 min/km`
+
+    ###### 📌 Qual escolher?
+    - **20 minutos:** mais adequado para quem treina em alta intensidade. O ajuste compensa o tempo reduzido.
+    - **30 minutos:** mais direto e confiável, ideal para quem sustenta ritmo alto por mais tempo.
+
+    """)
