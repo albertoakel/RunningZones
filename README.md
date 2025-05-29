@@ -1,6 +1,8 @@
 # 🏃‍♂️ Dashboard de Desempenho para Corrida
+Sou corredor de longas distâncias e, ao longo da minha jornada, percebi que as métricas oferecidas pelas ferramentas convencionais de monitoramento de desempenho nem sempre são suficientes para minhas necessidades. Por isso, desenvolvo minhas próprias soluções com o objetivo de compreender melhor meus dados, extrair insights personalizados e, acima de tudo, contribuir com a comunidade. Acredito no poder das iniciativas colaborativas e no software livre como formas de aprendizado, inovação e evolução coletiva.
 
-Este projeto tem como objetivo o desenvolvimento de um **dashboard interativo em Streamlit** voltado para **análise de métricas de desempenho de corrida**, com possibilidade de integração com **APIs como Strava ou Garmin**. O sistema é voltado para atletas, treinadores e entusiastas que desejam acompanhar sua evolução e entender melhor sua performance.
+
+Este projeto tem o objetivo do desenvolvimento de um **dashboard interativo em Streamlit** voltado para **análise de métricas de desempenho de corrida**, com possibilidade de integração com **APIs como Strava ou Garmin**. O sistema é voltado para atletas, treinadores e entusiastas que desejam acompanhar sua evolução e entender melhor sua performance.
 
 ## 🎯 Funcionalidades
 
